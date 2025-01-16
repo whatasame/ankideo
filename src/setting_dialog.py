@@ -13,19 +13,19 @@ class SettingDialog(QDialog):
         # Layout
         self.setLayout(QVBoxLayout())
 
-        # Source field ui
-        self.source_label = QLabel("Source field name")
-        self.source_line_edit = QLineEdit(config["source_field"])
+        # Video field ui
+        self.video_label = QLabel("Video field name")
+        self.video_line_edit = QLineEdit(config["video_field"])
 
-        self.layout().addWidget(self.source_label)
-        self.layout().addWidget(self.source_line_edit)
+        self.layout().addWidget(self.video_label)
+        self.layout().addWidget(self.video_line_edit)
 
-        # Target field ui
-        self.target_label = QLabel("target field name")
-        self.target_line_edit = QLineEdit(config["target_field"])
+        # Audio field ui
+        self.audio_label = QLabel("Audio field name")
+        self.audio_line_edit = QLineEdit(config["audio_field"])
 
-        self.layout().addWidget(self.target_label)
-        self.layout().addWidget(self.target_line_edit)
+        self.layout().addWidget(self.audio_label)
+        self.layout().addWidget(self.audio_line_edit)
 
         # Save button ui
         self.save_button = QPushButton("Save")
@@ -35,11 +35,11 @@ class SettingDialog(QDialog):
         self.layout().addWidget(self.save_button)
 
     def on_click_save(self):
-        source_field = self.source_line_edit.text()
-        target_field = self.target_line_edit.text()
+        video_field = self.video_line_edit.text()
+        audio_field = self.audio_line_edit.text()
 
-        self.config["source_field"] = source_field
-        self.config["target_field"] = target_field
+        self.config["video_field"] = video_field
+        self.config["audio_field"] = audio_field
         mw.addonManager.writeConfig(__name__, self.config)
 
         QMessageBox.information(self, "Success", "Setting saved")

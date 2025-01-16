@@ -5,7 +5,7 @@ from .setting_dialog import setting_dialog_open
 
 
 def build_setting_menu_item():
-    action = QAction("mp4 to mp3 options", mw)
+    action = QAction("Ankideo options", mw)
 
     qconnect(action.triggered, setting_dialog_open)
 

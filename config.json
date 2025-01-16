@@ -1,4 +1,4 @@
 {
-  "source_field": "video",
-  "target_field": "audio"
+  "video_field": "Video",
+  "audio_field": "Audio"
 }
