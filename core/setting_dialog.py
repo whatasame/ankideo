@@ -1,29 +1,7 @@
-from typing import List, Any
+from typing import Any
 
 from aqt import mw
-from aqt.editor import Editor
-from aqt.qt import QAction, QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
-from aqt.utils import tooltip, qconnect
-
-
-def append_convert_button(exist_buttons: List[str], editor: Editor) -> None:
-    new_btn = editor.addButton(
-        icon=None,
-        cmd="Convert mp4 to mp3",
-        func=lambda ed: tooltip("Converted"),
-        tip="Convert mp4 file in input field to mp3 and insert into output field",
-        label="Convert",
-    )
-
-    exist_buttons.append(new_btn)
-
-
-def setting_menu_item():
-    action = QAction("mp4 to mp3 options", mw)
-
-    qconnect(action.triggered, setting_dialog_open)
-
-    mw.form.menuTools.addAction(action)
+from aqt.qt import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 
 
 class SettingDialog(QDialog):
