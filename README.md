@@ -11,11 +11,6 @@ field with just one click.
 
 ![demo_extract_audio](./resources/demo_extract_audio.gif)
 
-## Requirements
-
-* Anki 2.1.20 or later
-* ffmpeg
-
 ## Getting started
 
 1. Download ffmpeg binary (specific to your OS) and move it to the `libs/ffmpeg` directory.
@@ -23,6 +18,9 @@ field with just one click.
 3. Upload a video file to the video field in the editor.
 4. Press extract button. That's all!
 
-## Dependencies
+## Requirements
 
-* [moviepy](https://github.com/Zulko/moviepy/releases/tag/v2.1.2)
+* Anki 2.1.20 or later
+* ffmpeg
+
+

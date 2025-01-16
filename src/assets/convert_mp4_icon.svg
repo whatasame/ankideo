@@ -4,5 +4,5 @@
   <path d="M50 20l14 12-14 12z" fill="#2E7D32"/>
 
   <!-- MP4 텍스트 (오른쪽 하단) -->
-  <text x="48" y="55" font-family="Arial" font-size="12" text-anchor="end" fill="#FFC107">MP4</text>
+  <text x="48" y="55" font-family="Arial" font-size="25" text-anchor="end" fill="#FFC107">MP4</text>
 </svg>

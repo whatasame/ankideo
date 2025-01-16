@@ -1,36 +1,49 @@
 import os
-import sys
-
-
-def resolve_dependencies() -> None:
-    sys.path.append(os.path.join(os.path.dirname(__file__), '../libs', 'moviepy'))
-    os.environ["IMAGEIO_FFMPEG_EXE"] = os.path.join(os.path.dirname(__file__), '../libs', 'ffmpeg', 'ffmpeg')
-
-
-resolve_dependencies()
-
-from moviepy import VideoFileClip
+import subprocess
 
 
 def extract_audio(video_path: str) -> str:
-    video = VideoFileClip(video_path)
-    audio = video.audio
-
     audio_path = video_path.replace('.mp4', '.mp3')
-    audio.write_audiofile(audio_path, logger=None)
 
-    audio.close()
-    video.close()
+    ffmpeg_path = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
+
+    command = [
+        ffmpeg_path,
+        '-y',
+        '-i', video_path,
+        '-vn',
+        '-acodec', 'libmp3lame',
+        '-ar', '44100',
+        '-ac', '2',
+        '-ab', '128k',
+        audio_path
+    ]
+
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    if result.returncode != 0:
+        raise Exception(f"Error: {result.stderr.decode('utf-8')}")
 
     return audio_path
 
 
-def convert_to_mp4(video_path):
-    video = VideoFileClip(video_path)
+def convert_to_mp4(video_path: str) -> str:
+    mp4_path = video_path.replace('.webm', '.mp4')
 
-    mp4_path = os.path.splitext(video_path)[0] + '.mp4'
-    video.write_videofile(mp4_path, codec="libx264", audio_codec="libvorbis")
+    ffmpeg_path = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
 
-    video.close()
+    command = [
+        ffmpeg_path,
+        "-y",
+        "-i", video_path,
+        "-c:v", "libx264",
+        "-c:a", "aac",
+        mp4_path
+    ]
+
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    if result.returncode != 0:
+        raise Exception(f"Error: {result.stderr.decode('utf-8')}")
 
     return mp4_path
