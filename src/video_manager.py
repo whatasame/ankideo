@@ -23,3 +23,14 @@ def extract_audio(video_path: str) -> str:
     video.close()
 
     return audio_path
+
+
+def convert_to_mp4(video_path):
+    video = VideoFileClip(video_path)
+
+    mp4_path = os.path.splitext(video_path)[0] + '.mp4'
+    video.write_videofile(mp4_path, codec="libx264", audio_codec="libvorbis")
+
+    video.close()
+
+    return mp4_path
