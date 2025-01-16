@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from aqt import mw
@@ -10,11 +11,10 @@ from .text_utils import has_text, to_anki_media_path, to_sound_tag
 
 def append_convert_button(exist_buttons: List[str], editor: Editor) -> None:
     new_btn = editor.addButton(
-        icon=None,
+        icon=os.path.join(os.path.dirname(__file__), "assets", "icon.svg"),
         cmd="Convert mp4 to mp3",
         func=lambda ed: on_click(ed),
         tip="Convert mp4 file in input field to mp3 and insert into output field",
-        label="Convert",
     )
 
     exist_buttons.append(new_btn)
