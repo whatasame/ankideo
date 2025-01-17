@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- HTML 태그 모양 -->
+  <path d="M4 10h56v44H4z" fill="#E0E0E0" stroke="#BDBDBD" stroke-width="2"/>
+  <path d="M2 8h60v48H2z" fill="none" stroke="#BDBDBD" stroke-width="2"/>
+
+  <!-- 비디오 아이콘 -->
+  <path d="M20 12h24v24H20z" fill="#4CAF50"/>
+  <polygon points="44,20 58,32 44,44" fill="#2E7D32"/>
+
+  <!-- 오디오 아이콘 -->
+  <rect x="12" y="36" width="4" height="16" fill="#FFC107"/>
+  <rect x="20" y="30" width="4" height="22" fill="#FFC107"/>
+  <rect x="28" y="24" width="4" height="28" fill="#FFC107"/>
+</svg>

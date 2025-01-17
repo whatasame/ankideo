@@ -10,6 +10,7 @@ Ankidia is an add-on for Anki that allows you to edit media just one click.
 
 * [Extract audio from video](./resources/demo_extract_audio.gif)
 * Convert video to mp4 format
+* Embed audio into field
 
 ## Getting started
 
