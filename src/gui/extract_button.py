@@ -4,15 +4,15 @@ from typing import List
 from aqt import mw
 from aqt.editor import Editor
 
-from .constants import VIDEO_FIELD_KEY, AUDIO_FIELD_KEY
-from .exception import AnkidiaError
-from .utils import has_text, to_anki_media_path, to_sound_tag
-from .video_manager import extract_audio
+from ..constants import VIDEO_FIELD_KEY, AUDIO_FIELD_KEY
+from ..exception import AnkidiaError
+from ..utils import has_text, to_anki_media_path, to_sound_tag
+from ..video_manager import extract_audio
 
 
 def append_extract_button(exist_buttons: List[str], editor: Editor) -> None:
     extract_audio_button = editor.addButton(
-        icon=os.path.join(os.path.dirname(__file__), "assets", "extract_audio_icon.svg"),
+        icon=os.path.join(os.path.dirname(__file__), "../assets", "extract_audio_icon.svg"),
         cmd="Extract audio from video",
         func=lambda ed: on_click(ed),
         tip="Extract audio from video and insert into field",

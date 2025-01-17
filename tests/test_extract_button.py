@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
-from extract_button import on_click, AnkidiaError
+from gui.extract_button import on_click, AnkidiaError
 
 
 class TestOnClick(TestCase):

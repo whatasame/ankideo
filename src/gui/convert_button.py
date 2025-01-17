@@ -4,15 +4,15 @@ from typing import List
 from aqt import mw
 from aqt.editor import Editor
 
-from .constants import VIDEO_FIELD_KEY
-from .exception import AnkidiaError
-from .utils import has_text, to_anki_media_path, to_sound_tag
-from .video_manager import convert_to_mp4
+from ..constants import VIDEO_FIELD_KEY
+from ..exception import AnkidiaError
+from ..utils import has_text, to_anki_media_path, to_sound_tag
+from ..video_manager import convert_to_mp4
 
 
 def append_convert_button(exist_buttons: List[str], editor: Editor) -> None:
     convert_mp4_button = editor.addButton(
-        icon=os.path.join(os.path.dirname(__file__), "assets", "convert_mp4_icon.svg"),
+        icon=os.path.join(os.path.dirname(__file__), "../assets", "convert_mp4_icon.svg"),
         cmd="Convert video to mp4",
         func=lambda ed: on_click(ed),
         tip="Convert video to mp4",
