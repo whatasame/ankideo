@@ -4,7 +4,7 @@ import re
 
 from aqt import mw
 
-from exception import AnkidiaError
+from .exception import AnkidiaError
 
 
 def has_text(text: str) -> bool:

@@ -2,7 +2,7 @@ import os
 import subprocess
 import uuid
 
-from utils import check_file_exist
+from .utils import check_file_exist
 
 FFMPEG_PATH = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
 
