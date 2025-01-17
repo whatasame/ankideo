@@ -1,6 +1,6 @@
-# Ankideo
+# Ankidia
 
-Ankideo is an add-on for Anki that allows you to edit video just one click.
+Ankidia is an add-on for Anki that allows you to edit media just one click.
 
 > [!WARNING]
 > This add-on is in the early stages of development.
@@ -14,7 +14,7 @@ Ankideo is an add-on for Anki that allows you to edit video just one click.
 ## Getting started
 
 1. Download ffmpeg binary (specific to your OS) and move it to the `libs/ffmpeg` directory.
-2. In Anki, go to `Tools > Ankideo options` and set your video field and audio field.
+2. In Anki, go to `Tools > ankidia options` and set your video field and audio field.
 3. Upload a video file to the video field in the editor.
 4. Click a button. That's all!
 

@@ -5,7 +5,7 @@ from .setting_dialog import setting_dialog_open
 
 
 def build_setting_menu_item():
-    action = QAction("Ankideo options", mw)
+    action = QAction("Ankidia options", mw)
 
     qconnect(action.triggered, setting_dialog_open)
 
