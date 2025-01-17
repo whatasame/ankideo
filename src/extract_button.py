@@ -5,7 +5,9 @@ from aqt import mw
 from aqt.editor import Editor
 from aqt.utils import tooltip
 
-from text_utils import has_text, to_anki_media_path, to_sound_tag
+from constants import VIDEO_FIELD_KEY, AUDIO_FIELD_KEY
+from exception import AnkidiaError
+from utils import has_text, to_anki_media_path, to_sound_tag
 from video_manager import extract_audio
 
 
@@ -22,15 +24,15 @@ def append_extract_button(exist_buttons: List[str], editor: Editor) -> None:
 
 def on_click(editor: Editor):
     config = mw.addonManager.getConfig(__name__)
-    video_field = config["video_field"]
-    audio_field = config["audio_field"]
+    video_field = config[VIDEO_FIELD_KEY]
+    audio_field = config[AUDIO_FIELD_KEY]
 
-    if not all(field in editor.note for field in (video_field, audio_field)):
-        tooltip("Wrong field name. Please check the field name in the setting dialog.")
-        return
+    for field in [video_field, audio_field]:
+        if not field in editor.note:
+            raise AnkidiaError(f"Field '{field}' doesn't exist in the note.")
+
     if not has_text(editor.note[video_field]):
-        tooltip("The video field is empty.")
-        return
+        raise AnkidiaError(f"'{video_field}' field is empty.")
 
     video_path = to_anki_media_path(editor.note[video_field])
     audio_path = extract_audio(video_path)

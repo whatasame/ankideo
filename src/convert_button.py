@@ -3,10 +3,10 @@ from typing import List
 
 from aqt import mw
 from aqt.editor import Editor
-from aqt.utils import tooltip
 
+from constants import VIDEO_FIELD_KEY
 from exception import AnkidiaError
-from text_utils import has_text, to_anki_media_path, to_sound_tag
+from utils import has_text, to_anki_media_path, to_sound_tag
 from video_manager import convert_to_mp4
 
 
@@ -23,15 +23,13 @@ def append_convert_button(exist_buttons: List[str], editor: Editor) -> None:
 
 def on_click(editor: Editor):
     config = mw.addonManager.getConfig(__name__)
-    video_field = config["video_field"]
+    video_field = config[VIDEO_FIELD_KEY]
 
     if not video_field in editor.note:
-        tooltip("Wrong field name. Please check the field name in the setting dialog.")
-        return
+        raise AnkidiaError(f"Field '{video_field}' doesn't exist in the note.")
 
     if not has_text(editor.note[video_field]):
-        tooltip("The video field is empty.")
-        return
+        raise AnkidiaError(f"'{video_field}' field is empty.")
 
     video_path = to_anki_media_path(editor.note[video_field])
     mp4_path = convert_to_mp4(video_path)

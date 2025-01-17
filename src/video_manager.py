@@ -2,14 +2,18 @@ import os
 import subprocess
 import uuid
 
+from utils import check_file_exist
+
+FFMPEG_PATH = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
+
 
 def extract_audio(video_path: str) -> str:
-    audio_path = os.path.splitext(video_path)[0] + '.mp3'
+    check_file_exist(video_path)
 
-    ffmpeg_path = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
+    result_path = os.path.splitext(video_path)[0] + '.mp3'
 
     command = [
-        ffmpeg_path,
+        FFMPEG_PATH,
         '-y',
         '-i', video_path,
         '-vn',
@@ -17,25 +21,25 @@ def extract_audio(video_path: str) -> str:
         '-ar', '44100',
         '-ac', '2',
         '-ab', '128k',
-        audio_path
+        result_path
     ]
 
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd_result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    if result.returncode != 0:
-        raise Exception(f"Error: {result.stderr.decode('utf-8')}")
+    if cmd_result.returncode != 0:
+        raise Exception(f"Error: {cmd_result.stderr.decode('utf-8')}")
 
-    return audio_path
+    return result_path
 
 
 def convert_to_mp4(video_path: str) -> str:
-    mp4_name = f"{uuid.uuid4()}.mp4"  # use uuid to avoid name conflict like percent encoding
-    mp4_path = os.path.join(os.path.dirname(video_path), mp4_name)
+    check_file_exist(video_path)
 
-    ffmpeg_path = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
+    # use uuid to avoid name conflict like percent encoding
+    result_path = os.path.join(os.path.dirname(video_path), f"{uuid.uuid4()}.mp4")
 
     command = [
-        ffmpeg_path,
+        FFMPEG_PATH,
         "-y",
         "-i", video_path,
         "-vf", "scale=854:480",
@@ -45,12 +49,12 @@ def convert_to_mp4(video_path: str) -> str:
         "-c:a", "aac",
         "-b:a", "192k",
         "-movflags", "faststart",
-        mp4_path
+        result_path
     ]
 
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd_result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    if result.returncode != 0:
-        raise Exception(f"Error: {result.stderr.decode('utf-8')}")
+    if cmd_result.returncode != 0:
+        raise Exception(f"Error: {cmd_result.stderr.decode('utf-8')}")
 
-    return mp4_path
+    return result_path
