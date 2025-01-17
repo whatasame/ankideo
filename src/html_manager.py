@@ -10,7 +10,7 @@ def build_audio_html(audio_path: str) -> str:
     extension = os.path.splitext(basename)[1][1:]
 
     return f"""
-<audio controls>
+<audio autoplay controls>
     <source src="{basename}" type="audio/{extension}">
     Your browser does not support the audio element.
 </audio>
