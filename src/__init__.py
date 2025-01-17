@@ -1,8 +1,3 @@
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 from aqt import gui_hooks
 
 from convert_button import append_convert_button
