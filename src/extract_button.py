@@ -5,8 +5,8 @@ from aqt import mw
 from aqt.editor import Editor
 from aqt.utils import tooltip
 
-from .text_utils import has_text, to_anki_media_path, to_sound_tag
-from .video_manager import extract_audio
+from text_utils import has_text, to_anki_media_path, to_sound_tag
+from video_manager import extract_audio
 
 
 def append_extract_button(exist_buttons: List[str], editor: Editor) -> None:

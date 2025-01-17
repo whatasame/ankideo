@@ -1,7 +1,7 @@
 from PyQt6.QtGui import QAction
 from aqt import mw, qconnect
 
-from .setting_dialog import setting_dialog_open
+from setting_dialog import setting_dialog_open
 
 
 def build_setting_menu_item():

@@ -5,8 +5,9 @@ from aqt import mw
 from aqt.editor import Editor
 from aqt.utils import tooltip
 
-from .text_utils import has_text, to_anki_media_path, to_sound_tag
-from .video_manager import convert_to_mp4
+from exception import AnkidiaError
+from text_utils import has_text, to_anki_media_path, to_sound_tag
+from video_manager import convert_to_mp4
 
 
 def append_convert_button(exist_buttons: List[str], editor: Editor) -> None:
