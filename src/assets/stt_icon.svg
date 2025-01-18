@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <path d="M6 10h44v44H6z" fill="#4CAF50"/>
+  <path d="M50 20l14 12-14 12z" fill="#2E7D32"/>
+
+  <text x="15" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFC107">STT</text>
+</svg>

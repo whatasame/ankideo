@@ -1,4 +1,5 @@
 {
   "video_field": "Video",
-  "audio_field": "Audio"
+  "audio_field": "Audio",
+  "stt_field": "STT"
 }

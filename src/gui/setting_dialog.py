@@ -27,6 +27,13 @@ class SettingDialog(QDialog):
         self.layout().addWidget(self.audio_label)
         self.layout().addWidget(self.audio_line_edit)
 
+        # STT field ui
+        self.stt_label = QLabel("STT field name")
+        self.stt_line_edit = QLineEdit(config["stt_field"])
+
+        self.layout().addWidget(self.stt_label)
+        self.layout().addWidget(self.stt_line_edit)
+
         # Save button ui
         self.save_button = QPushButton("Save")
 
@@ -37,9 +44,11 @@ class SettingDialog(QDialog):
     def on_click_save(self):
         video_field = self.video_line_edit.text()
         audio_field = self.audio_line_edit.text()
+        stt_field = self.stt_line_edit.text()
 
         self.config["video_field"] = video_field
         self.config["audio_field"] = audio_field
+        self.config["stt_field"] = stt_field
         mw.addonManager.writeConfig(__name__, self.config)
 
         QMessageBox.information(self, "Success", "Setting saved")

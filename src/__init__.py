@@ -5,6 +5,7 @@ from .gui.convert_button import append_convert_button
 from .gui.embed_media_button import append_embed_media_button
 from .gui.extract_button import append_extract_button
 from .gui.setting_menu_item import build_setting_menu_item
+from .gui.stt_button import append_stt_button
 
 
 def run():
@@ -15,3 +16,4 @@ def run():
     gui_hooks.editor_did_init_buttons.append(append_extract_button)
     gui_hooks.editor_did_init_buttons.append(append_convert_button)
     gui_hooks.editor_did_init_buttons.append(append_embed_media_button)
+    gui_hooks.editor_did_init_buttons.append(append_stt_button)
