@@ -6,11 +6,12 @@ Ankidia is an add-on for Anki that allows you to edit media just one click.
 > This add-on is in the early stages of development.
 > Please report any issues you encounter.
 
-## Feature
+## Features
 
 * [Extract audio from video](./resources/demo_extract_audio.gif)
 * Convert video to mp4 format
 * Embed audio into field
+* STT (Speech to Text) using OpenAI's Whisper
 
 ## Getting started
 
@@ -24,4 +25,7 @@ Ankidia is an add-on for Anki that allows you to edit media just one click.
 * Anki 2.1.20 or later
 * ffmpeg
 
+## Dependencies
+
+* [openai-whisper](https://github.com/openai/whisper)
 
