@@ -2,9 +2,9 @@ import os
 import subprocess
 import uuid
 
-from .utils import check_file_exist
+from ..core.utils import check_file_exist
 
-FFMPEG_PATH = os.path.join(os.path.dirname(__file__), "../libs", "ffmpeg", "ffmpeg")
+FFMPEG_PATH = os.path.join(os.path.dirname(__file__), "../../libs", "ffmpeg", "ffmpeg")
 
 
 def extract_audio(video_path: str) -> str:

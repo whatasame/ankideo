@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from utils import *
+from core.utils import *
 
 
 class TestHasText(TestCase):

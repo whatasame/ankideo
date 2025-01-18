@@ -1,19 +1,62 @@
-from aqt import gui_hooks
+import sys
 
-from .exception import init_exception_handler
-from .gui.convert_button import append_convert_button
-from .gui.embed_media_button import append_embed_media_button
-from .gui.extract_button import append_extract_button
-from .gui.setting_menu_item import build_setting_menu_item
-from .gui.stt_button import append_stt_button
+from PyQt6.QtGui import QAction
+from aqt import gui_hooks, mw, qconnect
+from aqt.utils import tooltip
+
+from .core.exception import AnkidiaError
+from .gui.editor_button import ExtractAudioButton, ConvertVideoFormatButton, EditorButton, EmbedMediaButton, SttButton
+from .gui.preference_dialog import PreferenceDialog
 
 
 def run():
     init_exception_handler()
+    init_preference_dialog()
+    init_editor_button()
 
-    build_setting_menu_item()
 
-    gui_hooks.editor_did_init_buttons.append(append_extract_button)
-    gui_hooks.editor_did_init_buttons.append(append_convert_button)
-    gui_hooks.editor_did_init_buttons.append(append_embed_media_button)
-    gui_hooks.editor_did_init_buttons.append(append_stt_button)
+def init_exception_handler():
+    def ankidia_exception_handler(exctype, value, traceback):
+        if isinstance(value, AnkidiaError):
+            tooltip(value.message)
+        else:
+            sys.__excepthook__(exctype, value, traceback)
+
+    sys.excepthook = ankidia_exception_handler
+
+
+def init_preference_dialog():
+    def on_click():
+        config = mw.addonManager.getConfig(__name__)
+
+        dialog = PreferenceDialog(config)
+        dialog.show()
+        dialog.exec()
+
+    action = QAction("Ankidia preference", mw)
+
+    qconnect(action.triggered, on_click)
+
+    mw.form.menuTools.addAction(action)
+
+
+def init_editor_button():
+    new_buttons = [
+        ExtractAudioButton(),
+        ConvertVideoFormatButton(),
+        EmbedMediaButton(),
+        SttButton(),
+    ]
+
+    def build_button_handler(btn: EditorButton):
+        return lambda exist_buttons, editor: exist_buttons.append(
+            editor.addButton(
+                icon=btn.icon_path,
+                cmd=btn.cmd,
+                func=lambda ed: btn.on_click(ed),
+                tip=btn.tip,
+            )
+        )
+
+    for button in new_buttons:
+        gui_hooks.editor_did_init_buttons.append(build_button_handler(button))

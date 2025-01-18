@@ -1,6 +1,6 @@
 import os.path
 
-from .utils import check_file_exist
+from ..core.utils import check_file_exist
 
 
 def build_audio_html(audio_path: str) -> str:

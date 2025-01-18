@@ -5,8 +5,8 @@ import sys
 def resolve_dependencies() -> None:
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    whisper_path = os.path.join(current_dir, '../libs', 'whisper')
-    ffmpeg_path = os.path.join(current_dir, '../libs', 'ffmpeg', 'ffmpeg')
+    whisper_path = os.path.join(current_dir, '../../libs', 'whisper')
+    ffmpeg_path = os.path.join(current_dir, '../../libs', 'ffmpeg', 'ffmpeg')
 
     if whisper_path not in sys.path:
         sys.path.append(whisper_path)
@@ -19,7 +19,7 @@ resolve_dependencies()
 
 import whisper
 
-from .utils import check_file_exist
+from ..core.utils import check_file_exist
 
 
 def speech_to_text(audio_path: str) -> str:

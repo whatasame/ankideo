@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- 비디오 카메라 (확장됨) -->
+  <!-- Video icon -->
   <path d="M6 10h44v44H6z" fill="#4CAF50"/>
   <path d="M50 20l14 12-14 12z" fill="#2E7D32"/>
 
-  <!-- 오디오 파형 (확장됨) -->
+  <!-- Audio icon -->
   <path d="M18 32h6v12h-6zM28 24h6v26h-6zM38 16h6v42h-6z" fill="#FFC107"/>
 </svg>
