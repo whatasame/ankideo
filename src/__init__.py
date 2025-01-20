@@ -42,10 +42,10 @@ def init_preference_dialog():
 
 def init_editor_button():
     new_buttons = [
-        ExtractAudioButton(),
         ConvertVideoFormatButton(),
-        EmbedMediaButton(),
+        ExtractAudioButton(),
         SttButton(),
+        EmbedMediaButton(),
     ]
 
     def build_button_handler(btn: EditorButton):
