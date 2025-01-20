@@ -14,7 +14,7 @@ def build_video_html(video_paths: list[str]) -> str:
         source_tags.append(f"<source src={basename} type=video/{extension}>")
 
     return f"""
-<video controls style="max-width: 100%; height: auto;">
+<video controls="" style="max-width: 100%; height: auto;" playsinline="">
     {''.join(source_tags)}
     Your browser does not support the video tag.
 </video>
