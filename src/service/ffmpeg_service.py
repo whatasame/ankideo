@@ -12,7 +12,8 @@ FFMPEG_PATH = os.path.join(os.path.dirname(__file__), "../../libs", "ffmpeg", "f
 def extract_audio(video_path: str) -> str:
     check_file_exist(video_path)
 
-    result_path = os.path.splitext(video_path)[0] + '.mp3'
+    # use uuid to avoid name conflict like percent encoding
+    result_path = os.path.join(os.path.dirname(video_path), f"{uuid.uuid4()}.mp3")
 
     command = [
         FFMPEG_PATH,
@@ -46,8 +47,7 @@ def convert_to_mp4(video_path: str) -> str:
         "-i", video_path,
         "-vf", "scale=640:360",
         "-c:v", "libx264",
-        "-b:v", "800k",
-        "-preset", "fast",
+        "-crf", "23",
         "-c:a", "aac",
         "-b:a", "128k",
         "-movflags", "faststart",
@@ -74,13 +74,10 @@ def convert_to_webm(video_path: str) -> str:
         "-i", video_path,
         "-vf", "scale=640:360",
         "-c:v", "libvpx-vp9",
-        "-b:v", "700k",
-        "-crf", "30",
-        "-deadline", "good",
-        "-cpu-used", "2",
+        "-crf", "23",
         "-c:a", "libopus",
         "-b:a", "128k",
-        "-f", "webm",
+        "-movflags", "faststart",
         result_path
     ]
 
@@ -92,17 +89,10 @@ def convert_to_webm(video_path: str) -> str:
     return result_path
 
 
-def convert_compatibles(video_path: str, *formats: SupportedVideoExtension) -> List[str]:
+def convert_compatibles(video_path: str, *extensions: SupportedVideoExtension) -> List[str]:
     format_converters = {
         SupportedVideoExtension.MAC: convert_to_webm,
         SupportedVideoExtension.IOS: convert_to_mp4
     }
 
-    def convert_if_needed(fmt: SupportedVideoExtension) -> str:
-        if video_path.endswith(fmt.value):
-            return video_path
-        converter = format_converters.get(fmt)
-
-        return converter(video_path)
-
-    return [convert_if_needed(fmt) for fmt in formats]
+    return [format_converters[fmt](video_path) for fmt in extensions]
