@@ -42,7 +42,7 @@ class TestToAnkiMediaPath(TestCase):
 
         text = "[sound:test.mp3]"
 
-        result = to_anki_media_path(text)
+        result = to_abs_path(text)
 
         self.assertEqual("/path/to/media/test.mp3", result)
 
@@ -52,7 +52,7 @@ class TestToAnkiMediaPath(TestCase):
 
         text = "Hello, [sound:test.mp3] World!"
 
-        result = to_anki_media_path(text)
+        result = to_abs_path(text)
 
         self.assertEqual("/path/to/media/test.mp3", result)
 
@@ -60,7 +60,7 @@ class TestToAnkiMediaPath(TestCase):
         text = "[sound:test.mp3][sound:test2.mp3]"
 
         with self.assertRaises(AnkidiaError) as context:
-            to_anki_media_path(text)
+            to_abs_path(text)
 
         self.assertEqual("More than one sound tag found.", str(context.exception))
 
@@ -68,7 +68,7 @@ class TestToAnkiMediaPath(TestCase):
         text = "test.mp3"
 
         with self.assertRaises(AnkidiaError) as context:
-            to_anki_media_path(text)
+            to_abs_path(text)
 
         self.assertEqual("No sound tag found.", str(context.exception))
 

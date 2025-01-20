@@ -1,5 +1,6 @@
 {
   "video_field": "Video",
+  "embedded_video_field": "Embedded video",
   "audio_field": "Audio",
   "embedded_audio_field": "Embedded audio",
   "stt_field": "STT"

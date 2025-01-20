@@ -18,7 +18,7 @@ def html_strip(text: str) -> str:
     return html.unescape(text).strip()
 
 
-def to_anki_media_path(text: str) -> str:
+def to_abs_path(text: str) -> str:
     sound_pattern = r"\[sound:(.*?)\]"
 
     matches = re.findall(sound_pattern, text)
