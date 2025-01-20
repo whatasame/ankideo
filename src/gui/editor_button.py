@@ -98,7 +98,7 @@ class ConvertVideoFormatButton(EditorButton):
 class EmbedMediaButton(EditorButton):
     def __init__(self):
         super().__init__(
-            field_keys={FieldKey.AUDIO_FIELD},
+            field_keys={FieldKey.AUDIO_FIELD, FieldKey.EMBEDDED_AUDIO_FIELD},
             icon_path=os.path.join(os.path.dirname(__file__), "../assets", "embed_media_icon.svg"),
             cmd="Embed media",
             tip="Embed audio or video into field",
@@ -113,7 +113,8 @@ class EmbedMediaButton(EditorButton):
 
         audio_path = to_anki_media_path(audio_field_value)
 
-        editor.note[audio_field_name] = build_audio_html(audio_path)
+        embedded_audio_field_name = self.get_field_name(FieldKey.EMBEDDED_AUDIO_FIELD)
+        editor.note[embedded_audio_field_name] = build_audio_html(audio_path)
 
 
 class SttButton(EditorButton):

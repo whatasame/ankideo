@@ -17,7 +17,12 @@ class PreferenceDialog(QDialog):
 
         # Field ui
         self.line_edits = {}
-        for field_key in [FieldKey.VIDEO_FIELD, FieldKey.AUDIO_FIELD, FieldKey.STT_FIELD]:
+        for field_key in [
+            FieldKey.VIDEO_FIELD,
+            FieldKey.AUDIO_FIELD,
+            FieldKey.EMBEDDED_AUDIO_FIELD,
+            FieldKey.STT_FIELD
+        ]:
             self.add_field_ui(field_key)
 
         # Save button ui
