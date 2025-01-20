@@ -5,6 +5,7 @@ from typing import List
 
 from ..core.constants import SupportedVideoExtension
 from ..core.utils import check_file_exist
+from ..ffmpeg.commands import Mp4ConversionCommand, WebmConversionCommand, Mp3ConversionCommand
 
 FFMPEG_PATH = os.path.join(os.path.dirname(__file__), "../../libs", "ffmpeg", "ffmpeg")
 
@@ -15,19 +16,9 @@ def extract_audio(video_path: str) -> str:
     # use uuid to avoid name conflict like percent encoding
     result_path = os.path.join(os.path.dirname(video_path), f"{uuid.uuid4()}.mp3")
 
-    command = [
-        FFMPEG_PATH,
-        '-y',
-        '-i', video_path,
-        '-vn',
-        '-acodec', 'libmp3lame',
-        '-ar', '44100',
-        '-ac', '2',
-        '-ab', '128k',
-        result_path
-    ]
+    commands = Mp3ConversionCommand(FFMPEG_PATH, video_path, result_path).commands
 
-    cmd_result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd_result = subprocess.run(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if cmd_result.returncode != 0:
         raise Exception(f"Error: {cmd_result.stderr.decode('utf-8')}")
@@ -41,20 +32,9 @@ def convert_to_mp4(video_path: str) -> str:
     # use uuid to avoid name conflict like percent encoding
     result_path = os.path.join(os.path.dirname(video_path), f"{uuid.uuid4()}.mp4")
 
-    command = [
-        FFMPEG_PATH,
-        "-y",
-        "-i", video_path,
-        "-vf", "scale=640:360",
-        "-c:v", "libx264",
-        "-crf", "23",
-        "-c:a", "aac",
-        "-b:a", "128k",
-        "-movflags", "faststart",
-        result_path
-    ]
+    commands = Mp4ConversionCommand(FFMPEG_PATH, video_path, result_path).commands
 
-    cmd_result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd_result = subprocess.run(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if cmd_result.returncode != 0:
         raise Exception(f"Error: {cmd_result.stderr.decode('utf-8')}")
@@ -68,20 +48,9 @@ def convert_to_webm(video_path: str) -> str:
     # use uuid to avoid name conflict like percent encoding
     result_path = os.path.join(os.path.dirname(video_path), f"{uuid.uuid4()}.webm")
 
-    command = [
-        FFMPEG_PATH,
-        "-y",
-        "-i", video_path,
-        "-vf", "scale=640:360",
-        "-c:v", "libvpx-vp9",
-        "-crf", "23",
-        "-c:a", "libopus",
-        "-b:a", "128k",
-        "-movflags", "faststart",
-        result_path
-    ]
+    commands = WebmConversionCommand(FFMPEG_PATH, video_path, result_path).commands
 
-    cmd_result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd_result = subprocess.run(commands, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if cmd_result.returncode != 0:
         raise Exception(f"Error: {cmd_result.stderr.decode('utf-8')}")
