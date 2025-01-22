@@ -4,6 +4,7 @@ from PyQt6.QtGui import QAction
 from aqt import gui_hooks, mw, qconnect
 from aqt.utils import tooltip
 
+from .core.config import Config
 from .core.exception import AnkidiaError
 from .gui.editor_button import ExtractAudioButton, ConvertVideoFormatButton, EditorButton, EmbedMediaButton, SttButton
 from .gui.preference_dialog import PreferenceDialog
@@ -27,9 +28,7 @@ def init_exception_handler():
 
 def init_preference_dialog():
     def on_click():
-        config = mw.addonManager.getConfig(__name__)
-
-        dialog = PreferenceDialog(config)
+        dialog = PreferenceDialog(Config())
         dialog.show()
         dialog.exec()
 

@@ -1,52 +1,28 @@
-from typing import Any
+from aqt.qt import QDialog, QVBoxLayout, QPushButton, QMessageBox, QTabWidget
 
-from aqt import mw
-from aqt.qt import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
-
-from ..core.constants import FieldKey
+from .embed_media_tab import EmbedMediaTab
+from ..core.config import Config
 
 
 class PreferenceDialog(QDialog):
-    def __init__(self, config: dict[str, Any]):
+    def __init__(self, config: Config):
         super().__init__()
-
         self.config = config
 
-        # Layout
-        self.setLayout(QVBoxLayout())
+        main_layout = QVBoxLayout()
+        self.setLayout(main_layout)
 
-        # Field ui
-        self.line_edits = {}
-        for field_key in [
-            FieldKey.VIDEO_FIELD,
-            FieldKey.AUDIO_FIELD,
-            FieldKey.EMBEDDED_AUDIO_FIELD,
-            FieldKey.STT_FIELD
-        ]:
-            self.add_field_ui(field_key)
+        self.tab_widget = QTabWidget()
+        main_layout.addWidget(self.tab_widget)
 
-        # Save button ui
-        self.save_button = QPushButton("Save")
+        embed_media_tab = EmbedMediaTab(config)
+        self.tab_widget.addTab(embed_media_tab, "Embed Media")
 
-        self.save_button.clicked.connect(self.on_click_save)  # type: ignore # https://stackoverflow.com/a/78920397
+        save_button = QPushButton("Save")
+        save_button.clicked.connect(self.on_save)
+        main_layout.addWidget(save_button)
 
-        self.layout().addWidget(self.save_button)
-
-    def add_field_ui(self, field_key: FieldKey):
-        label = QLabel(field_key.value)
-        self.layout().addWidget(label)
-
-        line_edit = QLineEdit(self.config[field_key.value])
-        self.layout().addWidget(line_edit)
-
-        self.line_edits[field_key] = line_edit
-
-    def on_click_save(self):
-        for field_key, line_edit in self.line_edits.items():
-            self.config[field_key.value] = line_edit.text()
-
-        mw.addonManager.writeConfig(__name__, self.config)
-
-        QMessageBox.information(self, "Success", "Setting saved")
-
+    def on_save(self):
+        self.config.save()
+        QMessageBox.information(self, "Success", "Settings saved")
         self.accept()
