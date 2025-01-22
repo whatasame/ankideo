@@ -1,4 +1,16 @@
 {
+  "convert_video": {
+    "fields": {
+      "video_field": "Video"
+    },
+    "ffmpeg_arguments": {
+      "width": 640,
+      "height": 360,
+      "crf": 26,
+      "extension": "mp4",
+      "audio_bitrate": "192k"
+    }
+  },
   "embed_media": {
     "video_field": "Video",
     "embedded_video_field": "Embedded video",
@@ -16,12 +28,6 @@
       "loop": false,
       "muted": false
     }
-  },
-  "convert_video": {
-    "target_extension": "mp4",
-    "ffmpeg_global_options": null,
-    "ffmpeg_input_options": null,
-    "ffmpeg_output_options": null
   }
 }
 

@@ -1,5 +1,6 @@
 from aqt.qt import QDialog, QVBoxLayout, QPushButton, QMessageBox, QTabWidget
 
+from .convert_video_tab import ConvertVideoTab
 from .embed_media_tab import EmbedMediaTab
 from ..core.config import Config
 
@@ -14,6 +15,9 @@ class PreferenceDialog(QDialog):
 
         self.tab_widget = QTabWidget()
         main_layout.addWidget(self.tab_widget)
+
+        convert_video_tab = ConvertVideoTab(config)
+        self.tab_widget.addTab(convert_video_tab, "Convert Video")
 
         embed_media_tab = EmbedMediaTab(config)
         self.tab_widget.addTab(embed_media_tab, "Embed Media")
