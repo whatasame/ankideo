@@ -1,14 +1,14 @@
 from ..constants.json_key import JsonKey
 
 
-class FieldsKey(JsonKey):
+class ConvertVideoFieldsKey(JsonKey):
     VIDEO_FIELD = "video_field"
 
     def get_full_path(self) -> list[str]:
         return ["convert_video", "fields", self.value]
 
 
-class FFmpegArgumentsKey(JsonKey):
+class ConvertVideoFFmpegArgumentsKey(JsonKey):
     WIDTH = "width"
     HEIGHT = "height"
     CRF = "crf"

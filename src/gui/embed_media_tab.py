@@ -31,7 +31,7 @@ class EmbedMediaFieldLayout(QWidget):
     def setup_ui(self):
         for field_key in EmbedMedia:
             label = QLabel(field_key.value)
-            line_edit = QLineEdit(self.config.get(field_key))
+            line_edit = QLineEdit(self.config[field_key])
             line_edit.textChanged.connect(lambda text, key=field_key: self.config.set(key, text))
 
             self.layout.addWidget(label)
@@ -53,7 +53,7 @@ class MediaTagAttributeLayout(QWidget):
 
             for attribute_key in attribute:
                 checkbox = QCheckBox(attribute_key.value)
-                checkbox.setChecked(self.config.get(attribute_key))
+                checkbox.setChecked(self.config[attribute_key])
                 checkbox.stateChanged.connect(lambda state, key=attribute_key: self.config.set(key, state))
 
                 group_layout.addWidget(checkbox)

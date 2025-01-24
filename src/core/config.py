@@ -7,12 +7,12 @@ from ..constants.json_key import JsonKey
 
 class Config:
     def __init__(self):
-        self.config = mw.addonManager.getConfig(__name__)
+        self.json = mw.addonManager.getConfig(__name__)
 
-    def get(self, key: JsonKey) -> Any:
+    def __getitem__(self, key: JsonKey) -> Any:
         path = key.get_full_path()
 
-        current = self.config
+        current = self.json
 
         for p in path:
             current = current[p]
@@ -22,11 +22,11 @@ class Config:
     def set(self, key: JsonKey, value: Any):
         path = key.get_full_path()
 
-        current = self.config
+        current = self.json
         for p in path[:-1]:
             current = current[p]
 
         current[path[-1]] = value
 
     def save(self):
-        mw.addonManager.writeConfig(__name__, self.config)
+        mw.addonManager.writeConfig(__name__, self.json)

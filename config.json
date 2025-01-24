@@ -7,8 +7,17 @@
       "width": 640,
       "height": 360,
       "crf": 26,
-      "extension": "mp4",
+      "extension": "webm",
       "audio_bitrate": "192k"
+    }
+  },
+  "extract_audio": {
+    "fields": {
+      "video_field": "Video",
+      "audio_field": "Audio"
+    },
+    "ffmpeg_arguments": {
+      "extension": "mp3"
     }
   },
   "embed_media": {

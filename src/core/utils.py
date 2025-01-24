@@ -24,7 +24,7 @@ def to_abs_path(text: str) -> str:
     matches = re.findall(sound_pattern, text)
 
     if not matches:
-        raise AnkidiaError("No sound tag found.")
+        raise AnkidiaError(f"No sound tag found. {text}")
     if len(matches) > 1:
         raise AnkidiaError("More than one sound tag found.")
 
@@ -45,3 +45,8 @@ def check_file_exist(path):
 
     if not os.path.isfile(path):
         raise AnkidiaError(f"File not found: {path}")
+
+
+def safe_remove_file(path):
+    if os.path.exists(path):
+        os.remove(path)
