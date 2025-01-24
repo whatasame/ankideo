@@ -1,7 +1,43 @@
+import os
+import uuid
 from typing import List, Optional
 
+from ..constants.convert_video_key import FFmpegArgumentsKey
+from ..core.config import Config
 
-class FFmpegCommand:
+
+class ConvertFFmpegCommand:
+    def __init__(
+            self,
+            input_path: str,
+            config: Config
+    ):
+        self.ffmpeg_path = os.path.join(os.path.dirname(__file__), "../../libs", "ffmpeg", "ffmpeg")
+        self.input_path = input_path
+        self.output_path = os.path.join(
+            os.path.dirname(input_path), f"{uuid.uuid4()}.{config.get(FFmpegArgumentsKey.EXTENSION)}")
+        self.config = config
+
+    def to_full_command(self) -> List[str]:
+        video_codec = {
+            "mp4": "libx264",
+            "webm": "libvpx-vp9"
+        }.get(self.config.get(FFmpegArgumentsKey.EXTENSION))
+
+        return [
+            self.ffmpeg_path,
+            "-i", self.input_path,
+            "-vf", f"scale={self.config.get(FFmpegArgumentsKey.WIDTH)}:{self.config.get(FFmpegArgumentsKey.HEIGHT)}",
+            "-c:v", video_codec,
+            "-crf", f"{self.config.get(FFmpegArgumentsKey.CRF)}",
+            "-c:a", "aac",
+            "-b:a", f"{self.config.get(FFmpegArgumentsKey.AUDIO_BITRATE)}",
+            "-movflags", "faststart",
+            self.output_path
+        ]
+
+
+class OldFFmpegCommand:
     def __init__(
             self,
             ffmpeg_path: str,
@@ -21,7 +57,7 @@ class FFmpegCommand:
         ]
 
 
-class Mp3ConversionCommand(FFmpegCommand):
+class Mp3ConversionCommandOld(OldFFmpegCommand):
     """
     Concrete FFmpeg command class specialized for MP3 conversion
     """
@@ -57,7 +93,7 @@ class Mp3ConversionCommand(FFmpegCommand):
         )
 
 
-class Mp4ConversionCommand(FFmpegCommand):
+class Mp4ConversionCommandOld(OldFFmpegCommand):
     """
     Concrete FFmpeg command class specialized for MP4 conversion
     """
@@ -96,7 +132,7 @@ class Mp4ConversionCommand(FFmpegCommand):
         )
 
 
-class WebmConversionCommand(FFmpegCommand):
+class WebmConversionCommandOld(OldFFmpegCommand):
     """
     Concrete FFmpeg command class specialized for WebM conversion
     """

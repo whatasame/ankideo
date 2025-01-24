@@ -1,5 +1,6 @@
-from abc import abstractmethod
 from enum import Enum
+
+from ..constants.json_key import JsonKey
 
 
 class FieldKey(Enum):
@@ -13,17 +14,6 @@ class FieldKey(Enum):
 class SupportedVideoExtension(Enum):
     MAC = "webm"
     IOS = "mp4"
-
-
-class JsonKey(Enum):
-    @staticmethod
-    @abstractmethod
-    def get_key_name() -> str:
-        pass
-
-    @abstractmethod
-    def get_full_path(self) -> list[str]:
-        pass
 
 
 class EmbedMedia(JsonKey):
