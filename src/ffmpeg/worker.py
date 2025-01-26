@@ -10,6 +10,10 @@ from ..gui.ffmpeg_output_dialog import FFmpegOutputDialog
 
 
 class FFmpegWorker:
+    """
+    If you want to control UI elements from a new thread, must use `mw.taskman.run_on_main()` method.
+    """
+
     def __init__(self, ffmpeg_command: FFmpegCommand, callback: Callable[[str], None]):
         self.ffmpeg_command = ffmpeg_command
         self.callback = callback
@@ -45,7 +49,8 @@ class FFmpegWorker:
                 mw.taskman.run_on_main(
                     lambda: self._on_failure(f"FFmpeg process returned code {self.process.returncode}"))
         except Exception as e:
-            mw.taskman.run_on_main(lambda: self._on_failure(str(e)))
+            error_message = str(e)
+            mw.taskman.run_on_main(lambda: self._on_failure(error_message))
 
     def _update_log(self, text):
         mw.taskman.run_on_main(lambda: self.output_dialog.text_edit.appendPlainText(text.strip()))
@@ -56,11 +61,17 @@ class FFmpegWorker:
         self.output_dialog.close()
 
     def _on_failure(self, error_msg):
+        """
+        When passing a function to `clicked.connect`, use a lambda to pass arguments.
+
+        Because when the button is clicked, `FFmpegWorker.run()` is already finished.
+        """
         self._update_log(f"[Ankidia] An error occurred: {error_msg}")
 
         self.output_dialog.cancel_button.setText("Ok")
         self.output_dialog.cancel_button.clicked.disconnect()
-        self.output_dialog.cancel_button.clicked.connect(self._handle_failure_confirm)
+
+        self.output_dialog.cancel_button.clicked.connect(lambda: self._handle_failure_confirm())
 
     def _handle_failure_confirm(self):
         safe_remove_file(self.ffmpeg_command.output_path)
@@ -73,4 +84,5 @@ class FFmpegWorker:
             self._update_log("[Ankidia] FFmpeg process has been canceled.")
 
             safe_remove_file(self.ffmpeg_command.output_path)
+
             self.output_dialog.close()
