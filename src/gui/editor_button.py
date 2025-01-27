@@ -5,6 +5,7 @@ from typing import Set
 from aqt.editor import Editor
 
 from ..constants.convert_video_key import ConvertVideoFieldsKey
+from ..constants.embed_media_key import EmbedMediaFieldsKey
 from ..constants.extract_audio_key import ExtractAudioFieldsKey
 from ..constants.json_key import JsonKey
 from ..core.config import Config
@@ -51,7 +52,10 @@ class EditorButton:
         # Redraw editor see more https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
         editor.set_note(editor.note)
 
-    def _get_focus_field_name(self, editor: Editor):
+    def _get_selected_field_name(self, editor: Editor) -> str:
+        """
+        :return: Returns the name of the current selected field that cursor is on in the editor
+        """
         current_field_index = editor.currentField
         if current_field_index is None:
             raise AnkidiaError("Click media field to embed")
@@ -119,10 +123,10 @@ class EmbedMediaButton(EditorButton):
     def __init__(self):
         super().__init__(
             allowed_field_keys={
-                FieldKey.VIDEO_FIELD,
-                FieldKey.EMBEDDED_VIDEO_FIELD,
-                FieldKey.AUDIO_FIELD,
-                FieldKey.EMBEDDED_AUDIO_FIELD,
+                EmbedMediaFieldsKey.VIDEO_FIELD,
+                EmbedMediaFieldsKey.EMBEDDED_VIDEO_FIELD,
+                EmbedMediaFieldsKey.AUDIO_FIELD,
+                EmbedMediaFieldsKey.EMBEDDED_AUDIO_FIELD,
             },
             icon_path=os.path.join(os.path.dirname(__file__), "../assets", "embed_media_icon.svg"),
             cmd="Embed media",

@@ -22,10 +22,12 @@
     }
   },
   "embed_media": {
-    "video_field": "Video",
-    "embedded_video_field": "Embedded video",
-    "audio_field": "Audio",
-    "embedded_audio_field": "Embedded audio",
+    "fields": {
+      "video_field": "Video",
+      "embedded_video_field": "Embedded video",
+      "audio_field": "Audio",
+      "embedded_audio_field": "Embedded audio"
+    },
     "video_tag_attribute": {
       "controls": true,
       "autoplay": true,
