@@ -9,7 +9,7 @@ class ConvertVideoTab(QWidget):
         super().__init__()
         self.config = config
 
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
         self.setLayout(layout)
 
         field_layout = ConvertVideoFieldLayout(config)

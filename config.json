@@ -17,7 +17,8 @@
       "audio_field": "Audio"
     },
     "ffmpeg_arguments": {
-      "extension": "mp3"
+      "extension": "mp3",
+      "audio_bitrate": "192k"
     }
   },
   "embed_media": {

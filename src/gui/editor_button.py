@@ -66,8 +66,8 @@ class ConvertVideoFormatButton(EditorButton):
         super().__init__(
             allowed_field_keys={ConvertVideoFieldsKey.VIDEO_FIELD},
             icon_path=os.path.join(os.path.dirname(__file__), "../assets", "convert_mp4_icon.svg"),
-            cmd="Convert video to mp4",
-            tip="Convert video to mp4",
+            cmd="Convert video to specific format",
+            tip="Convert video to specific format",
         )
 
     def operate(self, editor: Editor):

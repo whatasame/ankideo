@@ -1,4 +1,4 @@
-from ..constants.json_key import JsonKey
+from .json_key import JsonKey
 
 
 class ExtractAudioFieldsKey(JsonKey):
@@ -11,6 +11,7 @@ class ExtractAudioFieldsKey(JsonKey):
 
 class ExtractAudioFFmpegArgumentsKey(JsonKey):
     EXTENSION = "extension"
+    AUDIO_BITRATE = "audio_bitrate"
 
     def get_full_path(self) -> list[str]:
         return ["extract_audio", "ffmpeg_arguments", self.value]

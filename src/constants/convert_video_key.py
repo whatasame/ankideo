@@ -1,4 +1,4 @@
-from ..constants.json_key import JsonKey
+from .json_key import JsonKey
 
 
 class ConvertVideoFieldsKey(JsonKey):
