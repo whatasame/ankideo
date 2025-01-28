@@ -1,4 +1,5 @@
 import html
+import os
 import os.path
 import re
 
@@ -45,6 +46,13 @@ def check_file_exist(path):
 
     if not os.path.isfile(path):
         raise AnkidiaError(f"File not found: {path}")
+
+
+def split_basename_and_extension(path: str) -> tuple[str, str]:
+    basename = os.path.basename(path)
+    extension = os.path.splitext(basename)[1][1:]  # remove the dot
+
+    return basename, extension
 
 
 def safe_remove_file(path):

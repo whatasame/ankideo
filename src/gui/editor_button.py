@@ -12,10 +12,9 @@ from ..core.config import Config
 from ..core.exception import AnkidiaError
 from ..core.old_constants import FieldKey
 from ..core.utils import to_abs_path, to_sound_tag
+from ..embed.html_media_embedder import HtmlMediaEmbedder
 from ..ffmpeg.commands import ConvertVideoFFmpegCommand, ExtractAudioFFmpegCommand, Mp4FFmpegCommand, WebmFFmpegCommand
 from ..ffmpeg.worker import FFmpegManager
-from ..service.html_service import build_audio_html
-from ..service.html_service import build_video_html
 from ..service.whisper_service import speech_to_text
 
 
@@ -170,22 +169,26 @@ class EmbedMediaButton(EditorButton):
             manager.start_ffmpeg_tasks()
 
     def post_video_process(self, editor, output_paths):
+        embedder = HtmlMediaEmbedder(self.config)
+
         video_field_name = self.config[EmbedMediaFieldsKey.VIDEO_FIELD]
         editor.note[video_field_name] = "".join([to_sound_tag(output_path) for output_path in output_paths])
 
         embedded_video_field = self.config[EmbedMediaFieldsKey.EMBEDDED_VIDEO_FIELD]
-        editor.note[embedded_video_field] = build_video_html(output_paths)
+        editor.note[embedded_video_field] = embedder.generate_video_tag(output_paths)
 
         self._redraw_note(editor)
 
     def post_audio_process(self, editor, output_paths):
+        embedder = HtmlMediaEmbedder(self.config)
+
         output_path = output_paths.pop()
 
         audio_field_name = self.config[EmbedMediaFieldsKey.AUDIO_FIELD]
         editor.note[audio_field_name] = to_sound_tag(output_path)
 
         embedded_audio_field = self.config[EmbedMediaFieldsKey.EMBEDDED_AUDIO_FIELD]
-        editor.note[embedded_audio_field] = build_audio_html(output_path)
+        editor.note[embedded_audio_field] = embedder.generate_audio_tag(output_path)
 
         self._redraw_note(editor)
 

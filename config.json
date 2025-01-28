@@ -28,13 +28,15 @@
       "audio_field": "Audio",
       "embedded_audio_field": "Embedded audio"
     },
-    "video_tag_attribute": {
+    "video_tag_attributes": {
+      "style": "max-width: 100%; height: auto;",
       "controls": true,
       "autoplay": true,
       "loop": true,
       "muted": true
     },
-    "audio_tag_attribute": {
+    "audio_tag_attributes": {
+      "style": "",
       "controls": true,
       "autoplay": true,
       "loop": false,
