@@ -3,8 +3,8 @@ from typing import List
 
 from aqt import *
 
-from gui.ffmpeg_output_dialog import FFmpegOutputDialog
 from .commands import FFmpegCommand
+from ..gui.ffmpeg_output_dialog import FFmpegOutputDialog
 
 
 class FFmpegWorker(QObject):

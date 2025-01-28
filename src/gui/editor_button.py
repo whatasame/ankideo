@@ -14,6 +14,7 @@ from ..core.old_constants import FieldKey
 from ..core.utils import to_abs_path, to_sound_tag
 from ..ffmpeg.commands import ConvertVideoFFmpegCommand, ExtractAudioFFmpegCommand, Mp4FFmpegCommand, WebmFFmpegCommand
 from ..ffmpeg.worker import FFmpegManager
+from ..service.html_service import build_audio_html
 from ..service.html_service import build_video_html
 from ..service.whisper_service import speech_to_text
 
@@ -34,7 +35,13 @@ class EditorButton:
         self.operate(editor)
 
     def _redraw_note(self, editor):
-        # Redraw editor see more https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
+        """
+        If you want to redraw note after click, you should give them a callback function
+        including redraw function. Because asynchronous operation results after operate function ends.
+
+        And see more below why this function is needed.
+        https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
+        """
         editor.set_note(editor.note)
 
     def _validate_field(self, editor):
@@ -50,12 +57,6 @@ class EditorButton:
     @abstractmethod
     def operate(self, editor):
         pass
-
-    @abstractmethod
-    def post_process(self, editor, output_paths):
-        """
-        If you wanna redraw note, you should do here. Because FFmpeg commands works asynchronously
-        """
 
     def _get_selected_field_name(self, editor: Editor) -> str:
         """
@@ -154,11 +155,21 @@ class EmbedMediaButton(EditorButton):
                     Mp4FFmpegCommand(video_path),
                     WebmFFmpegCommand(video_path),
                 ],
-                on_all_tasks_completed=lambda output_paths: self.post_process(editor, output_paths),
+                on_all_tasks_completed=lambda output_paths: self.post_video_process(editor, output_paths),
+            )
+            manager.start_ffmpeg_tasks()
+        elif current_field_name == self.config[EmbedMediaFieldsKey.AUDIO_FIELD]:
+            audio_path = to_abs_path(current_field_value)
+
+            manager = FFmpegManager(
+                commands=[
+                    ExtractAudioFFmpegCommand(audio_path, self.config)
+                ],
+                on_all_tasks_completed=lambda output_paths: self.post_audio_process(editor, output_paths),
             )
             manager.start_ffmpeg_tasks()
 
-    def post_process(self, editor, output_paths):
+    def post_video_process(self, editor, output_paths):
         video_field_name = self.config[EmbedMediaFieldsKey.VIDEO_FIELD]
         editor.note[video_field_name] = "".join([to_sound_tag(output_path) for output_path in output_paths])
 
@@ -166,7 +177,18 @@ class EmbedMediaButton(EditorButton):
         editor.note[embedded_video_field] = build_video_html(output_paths)
 
         self._redraw_note(editor)
-        
+
+    def post_audio_process(self, editor, output_paths):
+        output_path = output_paths.pop()
+
+        audio_field_name = self.config[EmbedMediaFieldsKey.AUDIO_FIELD]
+        editor.note[audio_field_name] = to_sound_tag(output_path)
+
+        embedded_audio_field = self.config[EmbedMediaFieldsKey.EMBEDDED_AUDIO_FIELD]
+        editor.note[embedded_audio_field] = build_audio_html(output_path)
+
+        self._redraw_note(editor)
+
 
 class SttButton(EditorButton):
     def __init__(self):
