@@ -6,7 +6,7 @@ from aqt.utils import tooltip
 
 from .core.config import Config
 from .core.exception import AnkidiaError
-from .gui.editor_button import ConvertVideoFormatButton, EditorButton, ExtractAudioButton
+from .gui.editor_button import ConvertVideoFormatButton, EditorButton, ExtractAudioButton, EmbedMediaButton
 from .gui.preference_dialog import PreferenceDialog
 
 
@@ -44,7 +44,7 @@ def init_editor_button():
         ConvertVideoFormatButton(),
         ExtractAudioButton(),
         # SttButton(),
-        # EmbedMediaButton(),
+        EmbedMediaButton(),
     ]
 
     def build_button_handler(btn: EditorButton):

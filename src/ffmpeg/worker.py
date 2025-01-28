@@ -1,88 +1,80 @@
 import subprocess
-import threading
+from typing import List
 
-from aqt import mw
-from aqt.qt import *
+from aqt import *
 
-from ..core.utils import safe_remove_file
-from ..ffmpeg.commands import FFmpegCommand
-from ..gui.ffmpeg_output_dialog import FFmpegOutputDialog
+from gui.ffmpeg_output_dialog import FFmpegOutputDialog
+from .commands import FFmpegCommand
 
 
-class FFmpegWorker:
-    """
-    If you want to control UI elements from a new thread, must use `mw.taskman.run_on_main()` method.
-    """
+class FFmpegWorker(QObject):
+    output_ready = pyqtSignal(str)
+    finished = pyqtSignal()
 
-    def __init__(self, ffmpeg_command: FFmpegCommand, callback: Callable[[str], None]):
-        self.ffmpeg_command = ffmpeg_command
-        self.callback = callback
-        self.process = None
-        self.thread = None
-        self.output_dialog = None
+    def __init__(self, command: FFmpegCommand):
+        super().__init__()
+        self.command = command
+        self.is_cancelled = False
 
     def run(self):
-        self.output_dialog = FFmpegOutputDialog(mw)
-        self.output_dialog.cancel_button.clicked.connect(self._on_cancel)
+        process = subprocess.Popen(
+            self.command.to_full_command(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
+        while True:
+            if self.is_cancelled:
+                process.terminate()
+                break
+            line = process.stdout.readline()
+            if not line:
+                break
+            self.output_ready.emit(line.strip())
+        process.wait()
+        self.finished.emit()
+
+    def cancel(self):
+        self.is_cancelled = True
+
+
+class FFmpegManager:
+    def __init__(
+            self,
+            commands: List[FFmpegCommand],
+            on_all_tasks_completed: Callable[[List[str]], None],
+            dialog_parent=None
+    ):
+        self.commands = commands
+        self.on_all_tasks_completed = on_all_tasks_completed
+        self.dialog_parent = dialog_parent
+
+        self.thread_pool = QThreadPool()
+        self.workers = []
+        self.tasks_completed = 0
+        self.total_tasks = len(commands)
+        self.output_dialog = FFmpegOutputDialog(self.total_tasks, self.dialog_parent)
+
+    def start_ffmpeg_tasks(self):
+        self.tasks_completed = 0
+        self.workers = []
+
         self.output_dialog.show()
 
-        self.thread = threading.Thread(target=self._run_ffmpeg)
-        self.thread.start()
+        for i, command in enumerate(self.commands):
+            worker = FFmpegWorker(command)
+            worker.output_ready.connect(lambda text, idx=i: self.output_dialog.append_output(text, idx))
+            worker.finished.connect(lambda idx=i: self.task_finished(idx))
+            self.workers.append(worker)
+            self.thread_pool.start(worker.run)
 
-    def _run_ffmpeg(self):
-        try:
-            self.process = subprocess.Popen(
-                self.ffmpeg_command.to_full_command(),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True
-            )
+    def task_finished(self, index):
+        self.output_dialog.task_completed(index)
+        self.tasks_completed += 1
 
-            for line in self.process.stdout:
-                self._update_log(line)
+        if self.tasks_completed == self.total_tasks:
+            self.on_all_tasks_completed([worker.command.output_path for worker in self.workers])
 
-            self.process.wait()
-
-            if self.process.returncode == 0:
-                mw.taskman.run_on_main(lambda: self._on_success())
-            else:
-                mw.taskman.run_on_main(
-                    lambda: self._on_failure(f"FFmpeg process returned code {self.process.returncode}"))
-        except Exception as e:
-            error_message = str(e)
-            mw.taskman.run_on_main(lambda: self._on_failure(error_message))
-
-    def _update_log(self, text):
-        mw.taskman.run_on_main(lambda: self.output_dialog.text_edit.appendPlainText(text.strip()))
-
-    def _on_success(self):
-        self._update_log("[Ankidia] FFmpeg process has finished successfully.")
-        self.callback(self.ffmpeg_command.output_path)
-        self.output_dialog.close()
-
-    def _on_failure(self, error_msg):
-        """
-        When passing a function to `clicked.connect`, use a lambda to pass arguments.
-
-        Because when the button is clicked, `FFmpegWorker.run()` is already finished.
-        """
-        self._update_log(f"[Ankidia] An error occurred: {error_msg}")
-
-        self.output_dialog.cancel_button.setText("Ok")
-        self.output_dialog.cancel_button.clicked.disconnect()
-
-        self.output_dialog.cancel_button.clicked.connect(lambda: self._handle_failure_confirm())
-
-    def _handle_failure_confirm(self):
-        safe_remove_file(self.ffmpeg_command.output_path)
-
-        self.output_dialog.close()
-
-    def _on_cancel(self):
-        if self.process:
-            self.process.terminate()
-            self._update_log("[Ankidia] FFmpeg process has been canceled.")
-
-            safe_remove_file(self.ffmpeg_command.output_path)
-
-            self.output_dialog.close()
+    def cancel_all_tasks(self):
+        for worker in self.workers:
+            worker.cancel()

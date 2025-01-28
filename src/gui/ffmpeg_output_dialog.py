@@ -1,18 +1,27 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QPlainTextEdit, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QLabel
 
 
 class FFmpegOutputDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, num_tasks, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("FFmpeg log")
-        self.setMinimumWidth(600)
+        self.num_tasks = num_tasks
+        self.init_ui()
 
+    def init_ui(self):
         layout = QVBoxLayout()
+        self.output_texts = []
+        for i in range(self.num_tasks):
+            text_edit = QTextEdit()
+            text_edit.setReadOnly(True)
+            text_edit.setMinimumWidth(600)
+            text_edit.setMaximumHeight(100)
+            layout.addWidget(QLabel(f"Task {i + 1}:"))
+            layout.addWidget(text_edit)
+            self.output_texts.append(text_edit)
         self.setLayout(layout)
 
-        self.text_edit = QPlainTextEdit()
-        self.text_edit.setReadOnly(True)
-        layout.addWidget(self.text_edit)
+    def append_output(self, text, index):
+        self.output_texts[index].append(text)
 
-        self.cancel_button = QPushButton("Cancel")
-        layout.addWidget(self.cancel_button)
+    def task_completed(self, index):
+        self.output_texts[index].append("\n--- Task Completed ---")

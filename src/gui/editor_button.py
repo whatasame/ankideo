@@ -1,6 +1,6 @@
 import os
 from abc import abstractmethod
-from typing import Set
+from typing import Set, List
 
 from aqt.editor import Editor
 
@@ -11,12 +11,10 @@ from ..constants.json_key import JsonKey
 from ..core.config import Config
 from ..core.exception import AnkidiaError
 from ..core.old_constants import FieldKey
-from ..core.old_constants import SupportedVideoExtension
 from ..core.utils import to_abs_path, to_sound_tag
-from ..ffmpeg.commands import ConvertFFmpegCommand, ExtractAudioFFmpegCommand
-from ..ffmpeg.worker import FFmpegWorker
-from ..service.ffmpeg_service import convert_compatibles
-from ..service.html_service import build_audio_html, build_video_html
+from ..ffmpeg.commands import ConvertVideoFFmpegCommand, ExtractAudioFFmpegCommand, Mp4FFmpegCommand, WebmFFmpegCommand
+from ..ffmpeg.worker import FFmpegManager
+from ..service.html_service import build_video_html
 from ..service.whisper_service import speech_to_text
 
 
@@ -26,20 +24,25 @@ class EditorButton:
         self.icon_path = icon_path
         self.cmd = cmd
         self.tip = tip
+        self.config = Config()
 
     def on_click(self, editor: Editor):
         self._validate_field(editor)
 
+        self.config = Config()  # Refresh config
+
         self.operate(editor)
+
+    def _redraw_note(self, editor):
+        # Redraw editor see more https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
+        editor.set_note(editor.note)
 
     def _validate_field(self, editor):
         """
         Validate if the fields are existed in the note
         """
-        config = Config()
-
         for field_key in self.field_keys:
-            field_name = config[field_key]
+            field_name = self.config[field_key]
 
             if not field_name in editor.note:
                 raise AnkidiaError(f"Field '{field_name}' doesn't exist in the note.")
@@ -48,9 +51,11 @@ class EditorButton:
     def operate(self, editor):
         pass
 
-    def _redraw_editor(self, editor):
-        # Redraw editor see more https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
-        editor.set_note(editor.note)
+    @abstractmethod
+    def post_process(self, editor, output_paths):
+        """
+        If you wanna redraw note, you should do here. Because FFmpeg commands works asynchronously
+        """
 
     def _get_selected_field_name(self, editor: Editor) -> str:
         """
@@ -75,20 +80,23 @@ class ConvertVideoFormatButton(EditorButton):
         )
 
     def operate(self, editor: Editor):
-        config = Config()
-        video_field_name = config[ConvertVideoFieldsKey.VIDEO_FIELD]
+        video_field_name = self.config[ConvertVideoFieldsKey.VIDEO_FIELD]
         video_field_value = editor.note[video_field_name]
         video_path = to_abs_path(video_field_value)
 
-        ffmpeg_command = ConvertFFmpegCommand(video_path, config)
-        FFmpegWorker(ffmpeg_command, lambda output_path: self.post_process(editor, output_path)).run()
+        manager = FFmpegManager(
+            commands=[
+                ConvertVideoFFmpegCommand(video_path, self.config)
+            ],
+            on_all_tasks_completed=lambda output_paths: self.post_process(editor, output_paths),
+        )
+        manager.start_ffmpeg_tasks()
 
-    def post_process(self, editor, output_path):
-        config = Config()
-        video_field_name = config[ConvertVideoFieldsKey.VIDEO_FIELD]
-        editor.note[video_field_name] = to_sound_tag(output_path)
+    def post_process(self, editor, output_paths: List[str]):
+        video_field_name = self.config[ConvertVideoFieldsKey.VIDEO_FIELD]
+        editor.note[video_field_name] = to_sound_tag(output_paths.pop())
 
-        self._redraw_editor(editor)
+        self._redraw_note(editor)
 
 
 class ExtractAudioButton(EditorButton):
@@ -101,22 +109,23 @@ class ExtractAudioButton(EditorButton):
         )
 
     def operate(self, editor: Editor):
-        config = Config()
-
-        video_field_name = config[ExtractAudioFieldsKey.VIDEO_FIELD]
+        video_field_name = self.config[ExtractAudioFieldsKey.VIDEO_FIELD]
         video_field_value = editor.note[video_field_name]
         video_path = to_abs_path(video_field_value)
 
-        ffmpeg_command = ExtractAudioFFmpegCommand(video_path, config)
-        FFmpegWorker(ffmpeg_command, lambda output_path: self.post_process(editor, output_path)).run()
+        manager = FFmpegManager(
+            commands=[
+                ExtractAudioFFmpegCommand(video_path, self.config)
+            ],
+            on_all_tasks_completed=lambda output_paths: self.post_process(editor, output_paths),
+        )
+        manager.start_ffmpeg_tasks()
 
-    def post_process(self, editor, output_path):
-        config = Config()
+    def post_process(self, editor, output_paths: List[str]):
+        audio_field_name = self.config[ExtractAudioFieldsKey.AUDIO_FIELD]
+        editor.note[audio_field_name] = to_sound_tag(output_paths.pop())
 
-        audio_field_name = config[ExtractAudioFieldsKey.AUDIO_FIELD]
-        editor.note[audio_field_name] = to_sound_tag(output_path)
-
-        self._redraw_editor(editor)
+        self._redraw_note(editor)
 
 
 class EmbedMediaButton(EditorButton):
@@ -133,30 +142,31 @@ class EmbedMediaButton(EditorButton):
             tip="Embed audio or video into field",
         )
 
-    def operate(self, editor: Editor):
-        current_field_name = self._get_focus_field_name(editor)
-        if current_field_name == self._get_field_name(FieldKey.VIDEO_FIELD):
-            self._embed_video(editor, current_field_name)
-        elif current_field_name == self._get_field_name(FieldKey.AUDIO_FIELD):
-            self._embed_audio(editor, current_field_name)
-        else:
-            raise AnkidiaError("Not a audio or video field")
+    def operate(self, editor):
+        current_field_name = self._get_selected_field_name(editor)
+        current_field_value = editor.note[current_field_name]
 
-    def _embed_video(self, editor: Editor, video_field_name: str):
-        video_field_value = self._get_field_value(editor, FieldKey.VIDEO_FIELD)
-        video_path = to_abs_path(video_field_value)
-        video_paths = convert_compatibles(video_path, SupportedVideoExtension.MAC, SupportedVideoExtension.IOS)
-        editor.note[video_field_name] = "".join([to_sound_tag(video_path) for video_path in video_paths])
+        if current_field_name == self.config[EmbedMediaFieldsKey.VIDEO_FIELD]:
+            video_path = to_abs_path(current_field_value)
 
-        embedded_video_field_name = self._get_field_name(FieldKey.EMBEDDED_VIDEO_FIELD)
-        editor.note[embedded_video_field_name] = build_video_html(video_paths)
+            manager = FFmpegManager(
+                commands=[
+                    Mp4FFmpegCommand(video_path),
+                    WebmFFmpegCommand(video_path),
+                ],
+                on_all_tasks_completed=lambda output_paths: self.post_process(editor, output_paths),
+            )
+            manager.start_ffmpeg_tasks()
 
-    def _embed_audio(self, editor: Editor, audio_field_name: str):
-        audio_field_value = self._get_field_value(editor, FieldKey.AUDIO_FIELD)
-        audio_path = to_abs_path(audio_field_value)
-        embedded_audio_field_name = self._get_field_name(FieldKey.EMBEDDED_AUDIO_FIELD)
-        editor.note[embedded_audio_field_name] = build_audio_html(audio_path)
+    def post_process(self, editor, output_paths):
+        video_field_name = self.config[EmbedMediaFieldsKey.VIDEO_FIELD]
+        editor.note[video_field_name] = "".join([to_sound_tag(output_path) for output_path in output_paths])
 
+        embedded_video_field = self.config[EmbedMediaFieldsKey.EMBEDDED_VIDEO_FIELD]
+        editor.note[embedded_video_field] = build_video_html(output_paths)
+
+        self._redraw_note(editor)
+        
 
 class SttButton(EditorButton):
     def __init__(self):
