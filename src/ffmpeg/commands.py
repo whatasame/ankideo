@@ -157,9 +157,10 @@ class Mp4FFmpegCommand(FFmpegCommand):
     def _get_ffmpeg_output_options(self) -> List[str]:
         return [
             "-c:v", "libx264",
-            "-crf", "30",
+            "-crf", "23",
             "-c:a", "aac",
             "-b:a", "192k",
+            "-movflags", "faststart"
         ]
 
 
@@ -184,7 +185,8 @@ class WebmFFmpegCommand(FFmpegCommand):
     def _get_ffmpeg_output_options(self) -> List[str]:
         return [
             "-c:v", "libvpx-vp9",
-            "-crf", "30",
+            "-crf", "23",
             "-c:a", "libopus",
-            "-b:a", "128k"
+            "-b:a", "192k",
+            "-movflags", "faststart"
         ]

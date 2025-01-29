@@ -21,6 +21,7 @@ class EmbedVideoTagAttributesKey(JsonKey):
     AUTOPLAY = "autoplay"
     LOOP = "loop"
     MUTED = "muted"
+    SOURCE_FORMATS = "source_formats"
 
     @staticmethod
     def get_key_name() -> str:
@@ -36,7 +37,8 @@ class EmbedAudioTagAttributesKey(JsonKey):
     AUTOPLAY = "autoplay"
     LOOP = "loop"
     MUTED = "muted"
-
+    SOURCE_FORMATS = "source_formats"
+    
     @staticmethod
     def get_key_name() -> str:
         return "audio_tag_attributes"

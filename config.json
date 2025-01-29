@@ -33,14 +33,22 @@
       "controls": true,
       "autoplay": true,
       "loop": true,
-      "muted": true
+      "muted": true,
+      "source_formats": [
+        "webm",
+        "mp4",
+        "mov"
+      ]
     },
     "audio_tag_attributes": {
       "style": "",
       "controls": true,
       "autoplay": true,
       "loop": false,
-      "muted": false
+      "muted": false,
+      "source_formats": [
+        "mp3"
+      ]
     }
   }
 }
