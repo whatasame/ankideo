@@ -10,6 +10,7 @@ from .core.gui.editor_button import EditorButton
 from .core.gui.preference_dialog import PreferenceDialog
 from .embed.gui.embed_button import EmbedMediaButton
 from .extract.gui.extract_button import ExtractAudioButton
+from .stt.gui.stt_button import SttButton
 
 
 def run():
@@ -45,8 +46,8 @@ def init_editor_button():
     new_buttons = [
         ConvertVideoFormatButton(),
         ExtractAudioButton(),
-        # SttButton(),
         EmbedMediaButton(),
+        SttButton(),
     ]
 
     def build_button_handler(btn: EditorButton):

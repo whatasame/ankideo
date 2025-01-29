@@ -50,6 +50,15 @@
         "mp3"
       ]
     }
+  },
+  "stt": {
+    "fields": {
+      "audio_field": "Audio",
+      "stt_field": "STT"
+    },
+    "whisper_arguments": {
+      "model": "small"
+    }
   }
 }
 

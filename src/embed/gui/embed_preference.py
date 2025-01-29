@@ -4,7 +4,7 @@ from ..embed_constants import EmbedMediaFieldsKey, EmbedVideoTagAttributesKey, E
 from ...core.config import Config
 
 
-class EmbedMediaTab(QWidget):
+class EmbedMediaPreferenceTab(QWidget):
     def __init__(self, config: Config):
         super().__init__()
         self.config = config

@@ -4,7 +4,7 @@ from ..extract_constants import ExtractAudioFieldsKey, ExtractAudioFFmpegArgumen
 from ...core.config import Config
 
 
-class ExtractAudioTab(QWidget):
+class ExtractAudioPrefrenceTab(QWidget):
     def __init__(self, config: Config):
         super().__init__()
 

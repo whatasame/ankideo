@@ -17,21 +17,11 @@ class EditorButton:
         self.config = Config()
 
     def on_click(self, editor: Editor):
-        self._validate_field(editor)
-
         self.config = Config()  # Refresh config
 
+        self._validate_field(editor)
+        
         self.operate(editor)
-
-    def _redraw_note(self, editor):
-        """
-        If you want to redraw note after click, you should give them a callback function
-        including redraw function. Because asynchronous operation results after operate function ends.
-
-        And see more below why this function is needed.
-        https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
-        """
-        editor.set_note(editor.note)
 
     def _validate_field(self, editor):
         """
@@ -46,6 +36,16 @@ class EditorButton:
     @abstractmethod
     def operate(self, editor):
         pass
+
+    def _redraw_note(self, editor):
+        """
+        If you want to redraw note after click, you should give them a callback function
+        including redraw function. Because asynchronous operation results after operate function ends.
+
+        And see more below why this function is needed.
+        https://github.com/ankitects/anki/blob/5ef2328ea4fee706599dfdbcfe9edd7856f8de9b/qt/aqt/editor.py#L111C1-L118C8
+        """
+        editor.set_note(editor.note)
 
     def _get_selected_field_name(self, editor: Editor) -> str:
         """

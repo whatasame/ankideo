@@ -19,14 +19,20 @@ resolve_dependencies()
 
 import whisper
 
-from core.utils import check_file_exist
+from ..core.utils import check_file_exist
+
+from .stt_constants import SttWhisperArgumentsKey
 
 
-def speech_to_text(audio_path: str) -> str:
-    check_file_exist(audio_path)
+class WhisperService:
+    def __init__(self, config):
+        self.config = config
 
-    model = whisper.load_model("small")
+    def transcribe(self, audio_path: str) -> str:
+        check_file_exist(audio_path)
 
-    result = model.transcribe(audio_path, fp16=False)
+        model = whisper.load_model(self.config[SttWhisperArgumentsKey.MODEL])
 
-    return result["text"]
+        result = model.transcribe(audio_path, fp16=False)
+
+        return result["text"]
