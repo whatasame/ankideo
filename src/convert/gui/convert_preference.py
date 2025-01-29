@@ -5,7 +5,7 @@ from ...core.config import Config
 
 
 class ConvertVideoPreferenceTab(QWidget):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         super().__init__()
         self.config = config
 
@@ -20,7 +20,7 @@ class ConvertVideoPreferenceTab(QWidget):
 
 
 class ConvertVideoFieldLayout(QWidget):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         super().__init__()
         self.config = config
         self.layout = QVBoxLayout()
@@ -28,7 +28,7 @@ class ConvertVideoFieldLayout(QWidget):
 
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         for field_key in ConvertVideoFieldsKey:
             label = QLabel(field_key.value)
             line_edit = QLineEdit(self.config[field_key])
@@ -39,14 +39,14 @@ class ConvertVideoFieldLayout(QWidget):
 
 
 class ConvertVideoFFmpegArgumentsLayout(QWidget):
-    def __init__(self, config):
+    def __init__(self, config: Config) -> None:
         super().__init__()
         self.config = config
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         # Width and Height
         size_layout = QHBoxLayout()
         self.width_input = QSpinBox()

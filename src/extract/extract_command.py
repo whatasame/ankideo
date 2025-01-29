@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from ..core.config import Config
@@ -7,7 +8,7 @@ from ..extract.extract_constants import ExtractAudioFFmpegArgumentsKey
 
 class ExtractAudioFFmpegCommand(FFmpegCommand):
 
-    def __init__(self, input_path: str, config: Config):
+    def __init__(self, input_path: Path, config: Config):
         super().__init__(input_path)
 
         self.config = config

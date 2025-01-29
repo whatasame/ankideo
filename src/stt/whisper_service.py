@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 
 def resolve_dependencies() -> None:
@@ -19,8 +20,6 @@ resolve_dependencies()
 
 import whisper
 
-from ..core.utils import check_file_exist
-
 from .stt_constants import SttWhisperArgumentsKey
 
 
@@ -28,9 +27,7 @@ class WhisperService:
     def __init__(self, config):
         self.config = config
 
-    def transcribe(self, audio_path: str) -> str:
-        check_file_exist(audio_path)
-
+    def transcribe(self, audio_path: Path) -> str:
         model = whisper.load_model(self.config[SttWhisperArgumentsKey.MODEL])
 
         result = model.transcribe(audio_path, fp16=False)

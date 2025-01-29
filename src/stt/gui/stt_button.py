@@ -5,7 +5,7 @@ from aqt.editor import Editor
 from ..stt_constants import SttFieldsKey
 from ..whisper_service import WhisperService
 from ...core.gui.editor_button import EditorButton
-from ...core.utils import to_abs_path
+from ...core.models import SoundTag
 
 
 class SttButton(EditorButton):
@@ -20,7 +20,7 @@ class SttButton(EditorButton):
     def operate(self, editor: Editor):
         audio_field_name = self.config[SttFieldsKey.AUDIO_FIELD]
         audio_field_value = editor.note[audio_field_name]
-        audio_path = to_abs_path(audio_field_value)
+        audio_path = SoundTag(audio_field_value).to_path()
 
         whisper_service = WhisperService(self.config)
         transcription = whisper_service.transcribe(audio_path)
@@ -29,4 +29,3 @@ class SttButton(EditorButton):
         editor.note[stt_field_name] = transcription
 
         self._redraw_note(editor)
-        

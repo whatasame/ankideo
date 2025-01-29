@@ -7,7 +7,7 @@ from ..extract_command import ExtractAudioFFmpegCommand
 from ..extract_constants import ExtractAudioFieldsKey
 from ...core.ffmpeg.worker import FFmpegManager
 from ...core.gui.editor_button import EditorButton
-from ...core.utils import to_abs_path, to_sound_tag
+from ...core.models import SoundTag
 
 
 class ExtractAudioButton(EditorButton):
@@ -22,7 +22,7 @@ class ExtractAudioButton(EditorButton):
     def operate(self, editor: Editor):
         video_field_name = self.config[ExtractAudioFieldsKey.VIDEO_FIELD]
         video_field_value = editor.note[video_field_name]
-        video_path = to_abs_path(video_field_value)
+        video_path = SoundTag(video_field_value).to_path()
 
         manager = FFmpegManager(
             commands=[
@@ -32,8 +32,8 @@ class ExtractAudioButton(EditorButton):
         )
         manager.start_ffmpeg_tasks()
 
-    def post_process(self, editor, output_paths: List[str]):
+    def post_process(self, editor: Editor, output_paths: List[str]) -> None:
         audio_field_name = self.config[ExtractAudioFieldsKey.AUDIO_FIELD]
-        editor.note[audio_field_name] = to_sound_tag(output_paths.pop())
+        editor.note[audio_field_name] = str(SoundTag(output_paths.pop()))
 
         self._redraw_note(editor)

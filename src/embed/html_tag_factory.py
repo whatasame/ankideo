@@ -1,14 +1,16 @@
+from pathlib import Path
+
 from .embed_constants import EmbedVideoTagAttributesKey, EmbedAudioTagAttributesKey
-from ..core.utils import split_basename_and_extension
+from ..core.config import Config
 
 
 class HtmlTagFactory:
-    def __init__(self, config):
+    def __init__(self, config: Config) -> None:
         self._config = config
 
     def generate_video_tag(
             self,
-            video_paths: list[str],
+            video_paths: list[Path],
     ) -> str:
         attributes = [
             f'style="{self._config[EmbedVideoTagAttributesKey.STYLE]}"',
@@ -19,7 +21,8 @@ class HtmlTagFactory:
             'playsinline=""'
         ]
 
-        source_tags = [self._to_source_tag(video_path) for video_path in video_paths]
+        source_tags = [f"<source src={source_path.name} type=video/{source_path.suffix.lstrip('.')}>"
+                       for source_path in video_paths]
 
         return f"""
 <video {' '.join(attributes)}>
@@ -28,14 +31,9 @@ class HtmlTagFactory:
 </video>
         """.strip()
 
-    def _to_source_tag(self, source_path: str) -> str:
-        basename, extension = split_basename_and_extension(source_path)
-
-        return f"<source src={basename} type=video/{extension}>"
-
     def generate_audio_tag(
             self,
-            audio_path: str,
+            audio_path: Path,
     ) -> str:
         attributes = [
             f'style="{self._config[EmbedAudioTagAttributesKey.STYLE]}"',
@@ -45,11 +43,9 @@ class HtmlTagFactory:
             'muted=""' if self._config[EmbedAudioTagAttributesKey.MUTED] else '',
         ]
 
-        basename, extension = split_basename_and_extension(audio_path)
-
         return f"""
 <audio {' '.join(attributes)}>
-    <source src="{basename}" type="audio/{extension}">
+    <source src="{audio_path.name}" type="audio/{audio_path.suffix.lstrip('.')}">
     Your browser does not support the audio element.
 </audio>
         """.strip()

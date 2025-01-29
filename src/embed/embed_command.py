@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from ..core.ffmpeg.command import FFmpegCommand
@@ -5,7 +6,7 @@ from ..core.ffmpeg.command import FFmpegCommand
 
 class Mp4FFmpegCommand(FFmpegCommand):
 
-    def __init__(self, input_path: str):
+    def __init__(self, input_path: Path):
         super().__init__(input_path)
 
     def _get_output_extension(self) -> str:
@@ -33,7 +34,7 @@ class Mp4FFmpegCommand(FFmpegCommand):
 
 class WebmFFmpegCommand(FFmpegCommand):
 
-    def __init__(self, input_path: str):
+    def __init__(self, input_path: Path):
         super().__init__(input_path)
 
     def _get_output_extension(self) -> str:

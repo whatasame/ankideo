@@ -20,7 +20,7 @@ class EditorButton:
         self.config = Config()  # Refresh config
 
         self._validate_field(editor)
-        
+
         self.operate(editor)
 
     def _validate_field(self, editor):
