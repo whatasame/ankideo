@@ -1,8 +1,9 @@
 import unittest
 from unittest.mock import patch
 
-from core.exception import AnkidiaError
 from service.html_service import build_audio_html
+
+from core.exception import AnkidiaError
 
 
 class TestBuildAudioHtml(unittest.TestCase):

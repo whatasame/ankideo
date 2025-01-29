@@ -3,8 +3,8 @@ from typing import List
 
 from aqt import *
 
-from .commands import FFmpegCommand
-from ..gui.ffmpeg_output_dialog import FFmpegOutputDialog
+from .command import FFmpegCommand
+from ..gui.worker_output_dialog import WorkerOutputDialog
 
 
 class FFmpegWorker(QObject):
@@ -53,7 +53,7 @@ class FFmpegManager:
         self.workers = []
         self.tasks_completed = 0
         self.total_tasks = len(commands)
-        self.output_dialog = FFmpegOutputDialog(self.total_tasks, self.dialog_parent)
+        self.output_dialog = WorkerOutputDialog(self.total_tasks, self.dialog_parent)
 
     def start_ffmpeg_tasks(self):
         self.tasks_completed = 0

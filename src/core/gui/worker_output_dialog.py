@@ -1,7 +1,7 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QLabel
+from aqt import QDialog, QVBoxLayout, QTextEdit, QLabel
 
 
-class FFmpegOutputDialog(QDialog):
+class WorkerOutputDialog(QDialog):
     def __init__(self, num_tasks, parent=None):
         super().__init__(parent)
         self.num_tasks = num_tasks

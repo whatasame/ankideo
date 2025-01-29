@@ -1,7 +1,7 @@
 from aqt import *
 
-from ..constants.embed_media_key import EmbedMediaFieldsKey, EmbedVideoTagAttributesKey, EmbedAudioTagAttributesKey
-from ..core.config import Config
+from ..embed_constants import EmbedMediaFieldsKey, EmbedVideoTagAttributesKey, EmbedAudioTagAttributesKey
+from ...core.config import Config
 
 
 class EmbedMediaTab(QWidget):

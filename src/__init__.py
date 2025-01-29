@@ -1,13 +1,15 @@
 import sys
 
-from PyQt6.QtGui import QAction
-from aqt import gui_hooks, mw, qconnect
+from aqt import gui_hooks, mw, qconnect, QAction
 from aqt.utils import tooltip
 
+from .convert.gui.convert_button import ConvertVideoFormatButton
 from .core.config import Config
 from .core.exception import AnkidiaError
-from .gui.editor_button import ConvertVideoFormatButton, EditorButton, ExtractAudioButton, EmbedMediaButton
-from .gui.preference_dialog import PreferenceDialog
+from .core.gui.editor_button import EditorButton
+from .core.gui.preference_dialog import PreferenceDialog
+from .embed.gui.embed_button import EmbedMediaButton
+from .extract.gui.extract_button import ExtractAudioButton
 
 
 def run():

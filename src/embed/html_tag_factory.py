@@ -1,4 +1,4 @@
-from ..constants.embed_media_key import EmbedVideoTagAttributesKey, EmbedAudioTagAttributesKey
+from .embed_constants import EmbedVideoTagAttributesKey, EmbedAudioTagAttributesKey
 from ..core.utils import split_basename_and_extension
 
 

@@ -2,7 +2,7 @@ from typing import Any
 
 from aqt import mw
 
-from ..constants.json_key import JsonKey
+from .json_key import JsonKey
 
 
 class Config:

@@ -1,10 +1,10 @@
 from aqt import QWidget, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QComboBox, QSpinBox
 
-from ..constants.convert_video_key import ConvertVideoFieldsKey, ConvertVideoFFmpegArgumentsKey
-from ..core.config import Config
+from ..convert_constants import ConvertVideoFieldsKey, ConvertVideoFFmpegArgumentsKey
+from ...core.config import Config
 
 
-class ConvertVideoTab(QWidget):
+class ConvertVideoPreferenceTab(QWidget):
     def __init__(self, config: Config):
         super().__init__()
         self.config = config

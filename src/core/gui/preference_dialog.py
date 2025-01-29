@@ -1,9 +1,9 @@
 from aqt.qt import QDialog, QVBoxLayout, QPushButton, QMessageBox, QTabWidget
 
-from .convert_video_tab import ConvertVideoTab
-from .embed_media_tab import EmbedMediaTab
-from .extract_audio_tab import ExtractAudioTab
-from ..core.config import Config
+from ...convert.gui.convert_preference import ConvertVideoPreferenceTab
+from ...core.config import Config
+from ...embed.gui.embed_preference import EmbedMediaTab
+from ...extract.gui.extract_preference import ExtractAudioTab
 
 
 class PreferenceDialog(QDialog):
@@ -17,7 +17,7 @@ class PreferenceDialog(QDialog):
         self.tab_widget = QTabWidget()
         main_layout.addWidget(self.tab_widget)
 
-        convert_video_tab = ConvertVideoTab(config)
+        convert_video_tab = ConvertVideoPreferenceTab(config)
         self.tab_widget.addTab(convert_video_tab, "Convert Video")
 
         extract_audio_tab = ExtractAudioTab(config)

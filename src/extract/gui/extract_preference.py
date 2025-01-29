@@ -1,7 +1,7 @@
 from aqt import QWidget, QVBoxLayout, QLabel, QLineEdit, QComboBox, QHBoxLayout
 
-from ..constants.extract_audio_key import ExtractAudioFieldsKey, ExtractAudioFFmpegArgumentsKey
-from ..core.config import Config
+from ..extract_constants import ExtractAudioFieldsKey, ExtractAudioFFmpegArgumentsKey
+from ...core.config import Config
 
 
 class ExtractAudioTab(QWidget):

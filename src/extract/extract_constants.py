@@ -1,4 +1,4 @@
-from .json_key import JsonKey
+from ..core.json_key import JsonKey
 
 
 class ExtractAudioFieldsKey(JsonKey):

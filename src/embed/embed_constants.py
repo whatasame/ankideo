@@ -1,4 +1,4 @@
-from .json_key import JsonKey
+from ..core.json_key import JsonKey
 
 
 class EmbedMediaFieldsKey(JsonKey):
@@ -38,7 +38,7 @@ class EmbedAudioTagAttributesKey(JsonKey):
     LOOP = "loop"
     MUTED = "muted"
     SOURCE_FORMATS = "source_formats"
-    
+
     @staticmethod
     def get_key_name() -> str:
         return "audio_tag_attributes"
