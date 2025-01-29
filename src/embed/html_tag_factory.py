@@ -2,7 +2,7 @@ from ..constants.embed_media_key import EmbedVideoTagAttributesKey, EmbedAudioTa
 from ..core.utils import split_basename_and_extension
 
 
-class HtmlMediaEmbedder:
+class HtmlTagFactory:
     def __init__(self, config):
         self._config = config
 

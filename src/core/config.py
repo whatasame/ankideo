@@ -6,6 +6,13 @@ from ..constants.json_key import JsonKey
 
 
 class Config:
+    """
+    Wrapper class for Anki addon configuration.
+
+    The anki config is a dictionary-like object. So to access hierarchically nested keys,
+    we invoke recursively `__getitem__` method.
+    """
+
     def __init__(self):
         self.json = mw.addonManager.getConfig(__name__)
 

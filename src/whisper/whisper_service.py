@@ -19,7 +19,7 @@ resolve_dependencies()
 
 import whisper
 
-from ..core.utils import check_file_exist
+from core.utils import check_file_exist
 
 
 def speech_to_text(audio_path: str) -> str:
