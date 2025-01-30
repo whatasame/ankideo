@@ -4,6 +4,8 @@ from typing import Final, Union
 
 from aqt import mw
 
+from .exception import AnkidiaError
+
 
 class SoundTag:
     SOUND_PATTERN: Final = re.compile(r'\[sound:(.*?)\]')
@@ -15,9 +17,9 @@ class SoundTag:
             matches = re.findall(self.SOUND_PATTERN, source)
 
             if not matches:
-                raise ValueError(f"No sound tag found. {source}")
+                raise AnkidiaError(f"No sound tag found. {source}")
             if len(matches) > 1:
-                raise ValueError("More than one sound tag found.")
+                raise AnkidiaError("More than one sound tag found.")
 
             self.basename = matches.pop()
         else:
