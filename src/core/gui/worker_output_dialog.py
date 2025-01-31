@@ -4,8 +4,9 @@ from aqt import Qt, QDialog, QVBoxLayout, QTextEdit, QLabel, QWidget, QPushButto
 
 
 class WorkerOutputDialog(QDialog):
-    def __init__(self, parent: Optional[QWidget], num_tasks: int, on_cancel: Callable[[], None]) -> None:
+    def __init__(self, title: str, parent: Optional[QWidget], num_tasks: int, on_cancel: Callable[[], None]) -> None:
         super().__init__(parent)
+        self.setWindowTitle(title)
         self.num_tasks = num_tasks
         self.on_cancel = on_cancel
 
@@ -33,8 +34,12 @@ class WorkerOutputDialog(QDialog):
 
         self.setLayout(layout)
 
-    def append_output(self, index: int, text: str) -> None:
-        self.output_texts[index].append(text)
+    def append_output(self, index: int, text: str, color: Optional[str] = None) -> None:
+        if color:
+            colored_text = f'<span style="color: {color};">{text}</span>'
+            self.output_texts[index].append(colored_text)
+        else:
+            self.output_texts[index].append(text)
 
     def on_cancel_clicked(self):
         self.on_cancel()
