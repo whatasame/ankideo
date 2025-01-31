@@ -30,6 +30,6 @@ class WhisperService:
     def transcribe(self, audio_path: Path) -> str:
         model = whisper.load_model(self.config[SttWhisperArgumentsKey.MODEL])
 
-        result = model.transcribe(audio_path, fp16=False)
+        result = model.transcribe(str(audio_path), fp16=False)
 
         return result["text"]
