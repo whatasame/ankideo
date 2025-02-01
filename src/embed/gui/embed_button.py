@@ -46,13 +46,12 @@ class EmbedMediaButton(EditorButton):
             audio_field_value = editor.note[current_field_name]
             audio_path = SoundTag(audio_field_value).to_path()
 
-            manager = FFmpegManager(
-                commands=[
-                    ExtractAudioFFmpegCommand(audio_path, self.config)
-                ],
-                on_all_tasks_completed=lambda output_paths: self.post_audio_process(editor, output_paths),
-            )
-            manager.start_ffmpeg_tasks()
+            embedder = HtmlTagFactory(self.config)
+
+            embedded_audio_field = self.config[EmbedMediaFieldsKey.EMBEDDED_AUDIO_FIELD]
+            editor.note[embedded_audio_field] = embedder.generate_audio_tag(audio_path)
+
+            self._redraw_note(editor)
 
     def post_video_process(self, editor: Editor, output_paths: List[Path]) -> None:
         embedder = HtmlTagFactory(self.config)
@@ -62,15 +61,5 @@ class EmbedMediaButton(EditorButton):
 
         embedded_video_field = self.config[EmbedMediaFieldsKey.EMBEDDED_VIDEO_FIELD]
         editor.note[embedded_video_field] = embedder.generate_video_tag(output_paths)
-
-        self._redraw_note(editor)
-
-    def post_audio_process(self, editor: Editor, output_paths: List[Path]) -> None:
-        embedder = HtmlTagFactory(self.config)
-
-        output_path = output_paths.pop()
-
-        embedded_audio_field = self.config[EmbedMediaFieldsKey.EMBEDDED_AUDIO_FIELD]
-        editor.note[embedded_audio_field] = embedder.generate_audio_tag(output_path)
 
         self._redraw_note(editor)
