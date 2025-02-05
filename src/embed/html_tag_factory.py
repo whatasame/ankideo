@@ -24,9 +24,12 @@ class HtmlTagFactory:
         source_tags = [f"<source src={source_path.name} type=video/{source_path.suffix.lstrip('.')}>"
                        for source_path in video_paths]
 
+        attributes_str = ' '.join(attributes)
+        source_tags_str = '\n'.join(source_tags)
+
         return f"""
-<video {' '.join(attributes)}>
-    {''.join(source_tags)}
+<video {attributes_str}>
+    {source_tags_str}
     Your browser does not support the video tag.
 </video>
         """.strip()
