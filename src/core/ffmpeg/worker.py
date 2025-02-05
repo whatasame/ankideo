@@ -71,11 +71,13 @@ class FFmpegManager:
             self,
             commands: List[FFmpegCommand],
             on_all_tasks_completed: Callable[[List[str]], None],
-            dialog_parent=None
+            dialog_parent=None,
+            is_delete_input_files=False,
     ):
         self.commands = commands
         self.on_all_tasks_completed = on_all_tasks_completed
         self.dialog_parent = dialog_parent
+        self._is_delete_input_files = is_delete_input_files
 
         self.thread_pool = QThreadPool()
         self.thread_pool.setMaxThreadCount(len(commands))
@@ -111,6 +113,14 @@ class FFmpegManager:
         if self.tasks_completed == self.total_tasks:
             self.on_all_tasks_completed([worker.command.output_path for worker in self.workers])
             self.output_dialog.close()
+
+            if self._is_delete_input_files:
+                self._delete_input_files()
+
+    def _delete_input_files(self):
+        for command in self.commands:
+            if command.input_path.exists():
+                os.remove(command.input_path)
 
     def error_occurred(self, idx: int, error_message: str) -> None:
         self.cancel_all_tasks()

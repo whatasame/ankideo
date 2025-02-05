@@ -30,6 +30,7 @@ class ConvertVideoFormatButton(EditorButton):
                 ConvertVideoFFmpegCommand(video_path, self.config)
             ],
             on_all_tasks_completed=lambda output_paths: self.post_process(editor, output_paths),
+            is_delete_input_files=True,
         )
         manager.start_ffmpeg_tasks()
 

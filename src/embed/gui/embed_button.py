@@ -10,7 +10,6 @@ from ..html_tag_factory import HtmlTagFactory
 from ...core.ffmpeg.worker import FFmpegManager
 from ...core.gui.editor_button import EditorButton
 from ...core.models import SoundTag
-from ...extract.extract_command import ExtractAudioFFmpegCommand
 
 
 class EmbedMediaButton(EditorButton):
@@ -40,6 +39,7 @@ class EmbedMediaButton(EditorButton):
                     WebmFFmpegCommand(video_path),
                 ],
                 on_all_tasks_completed=lambda output_paths: self.post_video_process(editor, output_paths),
+                is_delete_input_files=True,
             )
             manager.start_ffmpeg_tasks()
         elif current_field_name == self.config[EmbedMediaFieldsKey.AUDIO_FIELD]:
